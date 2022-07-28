@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 typedef struct {
   std::string control;
@@ -17,6 +18,8 @@ class PWM {
 public:
   PWM();
   void dumpValues();
+
+  std::vector<PWM_CONTROL> getControls();
 
   void setEnable(PWM_CONTROL control, PWM_ENABLE value);
   void setMode(PWM_CONTROL control, PWM_MODE mode);

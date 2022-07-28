@@ -47,8 +47,12 @@ int main() {
   auto temp = nv.get_gpu_temperature();
   std::cout << "\nGPU Temp: " << temp << std::endl;
 
-  PWM pwm;
+  class PWM pwm;
   pwm.dumpValues();
+
+  auto controls = pwm.getControls();
+
+  pwm.setEnable(controls[1], AUTOMATIC);
 
   return 0;
 }
