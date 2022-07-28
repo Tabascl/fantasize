@@ -1,3 +1,3 @@
 oot/
 compile_commands.json
-app/.cache/
+.cache/
