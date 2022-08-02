@@ -40,9 +40,6 @@ PWM::PWM() {
           fs::path path_ctrl_mode(
               string(controlPath + string(PWM_POSTFIX_MODE)));
 
-          if (fs::exists(path_ctrl_enable) && fs::exists(path_ctrl_mode))
-            cout << control << endl;
-
           mPwmControls.insert(
               {controlPath, PWM_CONTROL{controlPath, path_ctrl_enable.string(),
                                         path_ctrl_mode.string()}});
@@ -59,8 +56,8 @@ void PWM::dumpValues() {
   }
 }
 
-std::vector<PWM_CONTROL> PWM::getControls() {
-  std::vector<PWM_CONTROL> vec;
+vector<PWM_CONTROL> PWM::getControls() {
+  vector<PWM_CONTROL> vec;
 
   for (auto elem : mPwmControls) {
     vec.push_back(elem.second);
@@ -71,8 +68,8 @@ std::vector<PWM_CONTROL> PWM::getControls() {
 
 void PWM::setEnable(PWM_CONTROL control, PWM_ENABLE value) {
   cout << control.control << endl;
-  std::ofstream ostrm(control.enable, std::ios::trunc);
-  ostrm << value;
+  ofstream ostrm(control.enable, ios::trunc);
+  ostrm << static_cast<int>(value);
   ostrm.close();
 }
 
@@ -80,10 +77,33 @@ void PWM::setValuePwm(PWM_CONTROL control, int pwm) {
   if (pwm < 0 || pwm > 255)
     return;
 
-  std::ofstream ostrm(control.control, std::ios::trunc);
+  ofstream ostrm(control.control, ios::trunc);
   ostrm << pwm;
   ostrm.close();
 }
+
+int PWM::readValue(PWM_CONTROL control, PWM_CONTROL_PROPERTY property) {
+  int result;
+  ifstream istrm;
+
+  switch (property) {
+  case PWM_CONTROL_PROPERTY::CONTROL:
+    istrm.open(control.control, ios::in);
+    istrm >> result;
+    break;
+  case PWM_CONTROL_PROPERTY::ENABLE:
+    istrm.open(control.enable, ios::in);
+    istrm >> result;
+    break;
+  case PWM_CONTROL_PROPERTY::MODE:
+    istrm.open(control.mode, ios::in);
+    istrm >> result;
+    break;
+  }
+
+  return result;
+}
+
 void PWM::setValuePercent(PWM_CONTROL control, int percentage) {
   setValuePwm(control, PWM_MAX_VALUE * percentage / 100);
 }

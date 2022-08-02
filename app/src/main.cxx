@@ -48,11 +48,12 @@ int main() {
   std::cout << "\nGPU Temp: " << temp << std::endl;
 
   class PWM pwm;
+  std::cout << '\n';
   pwm.dumpValues();
 
   auto controls = pwm.getControls();
-
-  pwm.setEnable(controls[1], AUTOMATIC);
+  std::cout << pwm.readValue(controls[0], PWM_CONTROL_PROPERTY::ENABLE)
+            << std::endl;
 
   return 0;
 }

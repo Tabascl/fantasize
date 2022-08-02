@@ -5,14 +5,19 @@
 #include <unordered_map>
 #include <vector>
 
-typedef struct {
+enum class PWM_CONTROL_PROPERTY { CONTROL, ENABLE, MODE };
+
+struct PWM_CONTROL {
   std::string control;
   std::string enable;
   std::string mode;
-} PWM_CONTROL;
 
-typedef enum { FULL_SPEED = 0, MANUAL_CONTROL, AUTOMATIC } PWM_ENABLE;
-typedef enum { DC = 0, PWM } PWM_MODE;
+  std::string initialEnable;
+  std::string initialMode;
+};
+
+enum class PWM_ENABLE { FULL_SPEED = 0, MANUAL_CONTROL };
+enum class PWM_MODE { DC = 0, PWM };
 
 class PWM {
 public:
@@ -20,6 +25,7 @@ public:
   void dumpValues();
 
   std::vector<PWM_CONTROL> getControls();
+  int readValue(PWM_CONTROL control, PWM_CONTROL_PROPERTY property);
 
   void setEnable(PWM_CONTROL control, PWM_ENABLE value);
   void setMode(PWM_CONTROL control, PWM_MODE mode);
