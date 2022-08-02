@@ -1,5 +1,6 @@
 #include <include/nvml.h>
-#include <nvidia.h>
+
+#include <Nvidia.h>
 
 Nvidia::Nvidia() { nvmlInit_v2(); }
 Nvidia::~Nvidia() { nvmlShutdown(); }

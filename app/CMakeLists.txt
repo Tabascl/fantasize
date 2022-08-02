@@ -8,8 +8,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(app
   src/main.cxx
-  src/nvidia.cxx
-  src/pwm.cxx
+  src/Nvidia.cxx
+  src/Pwm.cxx
+  src/SensorsWrapper.cxx
 )
 
 set_property(TARGET app PROPERTY CXX_STANDARD 17)

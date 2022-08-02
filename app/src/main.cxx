@@ -1,8 +1,9 @@
-#include <nvidia.h>
-#include <pwm.h>
+#include <iostream>
+
 #include <sensors/sensors.h>
 
-#include <iostream>
+#include <Nvidia.h>
+#include <Pwm.h>
 
 int main() {
   auto config = std::fopen("/etc/conf.d/sensors", "r");
