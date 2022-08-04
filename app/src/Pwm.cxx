@@ -51,7 +51,7 @@ PWM::PWM() {
 
 void PWM::dumpValues() {
   for (auto control : mPwmControls) {
-    cout << control.second.control << ", " << control.second.enable << ", "
+    cout << control.second.control << ", " << control.second.enable << ": "
          << control.second.mode << endl;
   }
 }

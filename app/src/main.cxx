@@ -4,6 +4,7 @@
 
 #include <Nvidia.h>
 #include <Pwm.h>
+#include <SensorsWrapper.h>
 
 int main() {
   auto config = std::fopen("/etc/conf.d/sensors", "r");
@@ -55,6 +56,16 @@ int main() {
   auto controls = pwm.getControls();
   std::cout << pwm.readValue(controls[0], PWM_CONTROL_PROPERTY::ENABLE)
             << std::endl;
+
+  SensorsWrapper sens;
+  auto sensors = sens.getTemperatureSensors();
+
+  std::cout << "\n";
+
+  for (auto sensor : sensors) {
+    std::cout << sens.getLabel(sensor) << ": " << sens.getValue(sensor)
+              << std::endl;
+  }
 
   return 0;
 }
