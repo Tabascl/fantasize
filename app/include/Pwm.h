@@ -8,9 +8,9 @@
 enum class PWM_CONTROL_PROPERTY { CONTROL, ENABLE, MODE };
 
 struct PWM_CONTROL {
-  std::string control;
-  std::string enable;
-  std::string mode;
+  std::string controlPath;
+  std::string enablePath;
+  std::string modePath;
 
   std::string initialEnable;
   std::string initialMode;

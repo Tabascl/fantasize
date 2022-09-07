@@ -51,8 +51,8 @@ PWM::PWM() {
 
 void PWM::dumpValues() {
   for (auto control : mPwmControls) {
-    cout << control.second.control << ", " << control.second.enable << ": "
-         << control.second.mode << endl;
+    cout << control.second.controlPath << ", " << control.second.enablePath
+         << ": " << control.second.modePath << endl;
   }
 }
 
@@ -67,8 +67,8 @@ vector<PWM_CONTROL> PWM::getControls() {
 }
 
 void PWM::setEnable(PWM_CONTROL control, PWM_ENABLE value) {
-  cout << control.control << endl;
-  ofstream ostrm(control.enable, ios::trunc);
+  cout << control.controlPath << endl;
+  ofstream ostrm(control.enablePath, ios::trunc);
   ostrm << static_cast<int>(value);
   ostrm.close();
 }
@@ -77,7 +77,7 @@ void PWM::setValuePwm(PWM_CONTROL control, int pwm) {
   if (pwm < 0 || pwm > 255)
     return;
 
-  ofstream ostrm(control.control, ios::trunc);
+  ofstream ostrm(control.controlPath, ios::trunc);
   ostrm << pwm;
   ostrm.close();
 }
@@ -88,15 +88,15 @@ int PWM::readValue(PWM_CONTROL control, PWM_CONTROL_PROPERTY property) {
 
   switch (property) {
   case PWM_CONTROL_PROPERTY::CONTROL:
-    istrm.open(control.control, ios::in);
+    istrm.open(control.controlPath, ios::in);
     istrm >> result;
     break;
   case PWM_CONTROL_PROPERTY::ENABLE:
-    istrm.open(control.enable, ios::in);
+    istrm.open(control.enablePath, ios::in);
     istrm >> result;
     break;
   case PWM_CONTROL_PROPERTY::MODE:
-    istrm.open(control.mode, ios::in);
+    istrm.open(control.modePath, ios::in);
     istrm >> result;
     break;
   }
