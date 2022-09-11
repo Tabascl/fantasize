@@ -7,14 +7,14 @@
 
 class HwmonTemperatureSensor : public TemperatureSensor {
 public:
-  HwmonTemperatureSensor(sensors_chip_name chipName,
-                         sensors_subfeature subfeature);
+  HwmonTemperatureSensor(const sensors_chip_name *chipName,
+                         const sensors_subfeature *subfeature);
 
   int getTemperature() override;
 
 private:
-  sensors_chip_name mChipName;
-  sensors_subfeature mSubFeature;
+  const sensors_chip_name *mChipName;
+  const sensors_subfeature *mSubFeature;
 };
 
 #endif // HWMONTEMPERATURESENSOR_H_

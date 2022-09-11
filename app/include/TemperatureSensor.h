@@ -1,8 +1,6 @@
 #ifndef TEMPERATURESENSOR_H_
 #define TEMPERATURESENSOR_H_
 
-#include <boost/json.hpp>
-
 #include <iostream>
 
 class TemperatureSensor {

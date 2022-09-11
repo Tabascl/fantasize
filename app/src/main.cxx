@@ -1,57 +1,43 @@
+#include <exception>
 #include <iostream>
+#include <memory>
+#include <vector>
 
 #include <sensors/sensors.h>
 
+#include <HwmonTemperatureSensor.h>
 #include <Nvidia.h>
 #include <Pwm.h>
-#include <SensorsWrapper.h>
 
-int main() {
-  auto config = std::fopen("/etc/conf.d/sensors", "r");
+#define CONFIG_FILE "/etc/conf.d/sensors"
+
+std::vector<std::shared_ptr<TemperatureSensor>> sensors() {
+  std::vector<std::shared_ptr<TemperatureSensor>> sensors;
+
+  auto config = fopen(CONFIG_FILE, "r");
   if (sensors_init(config) != 0) {
-    std::cout << "Fuck" << std::endl;
-    return 1;
+    throw std::runtime_error("Config file doesn't exist");
   }
 
   int c = 0;
-  for (const sensors_chip_name *i;
-       (i = sensors_get_detected_chips(0, &c)) != NULL;) {
-    std::cout << "Prefix: " << i->prefix << std::endl;
-
-    size_t size;
-    char *string;
-
-    sensors_snprintf_chip_name(string, size, i);
-
-    std::cout << std::string(string) << std::endl;
+  for (const sensors_chip_name *chipName;
+       (chipName = sensors_get_detected_chips(0, &c)) != NULL;) {
 
     int d = 0;
-    for (const sensors_feature *j; (j = sensors_get_features(i, &d)) != NULL;) {
-      const sensors_subfeature *temp_feature =
-          sensors_get_subfeature(i, j, SENSORS_SUBFEATURE_TEMP_INPUT);
-      if (temp_feature) {
-        std::cout << sensors_get_label(i, j);
-
-        double value;
-        if (sensors_get_value(i, temp_feature->number, &value) == 0)
-          std::cout << ": " << value << " C" << std::endl;
-      }
-
-      const sensors_subfeature *fan_feature =
-          sensors_get_subfeature(i, j, SENSORS_SUBFEATURE_FAN_INPUT);
-
-      if (fan_feature) {
-        std::cout << sensors_get_label(i, j);
-
-        double value;
-        if (sensors_get_value(i, fan_feature->number, &value) == 0)
-          std::cout << ": " << value << " RPM" << std::endl;
-      }
+    for (const sensors_feature *feature;
+         (feature = sensors_get_features(chipName, &d)) != NULL;) {
+      auto tempFeature = sensors_get_subfeature(chipName, feature,
+                                                SENSORS_SUBFEATURE_TEMP_INPUT);
+      if (tempFeature)
+        sensors.push_back(
+            std::make_shared<HwmonTemperatureSensor>(chipName, tempFeature));
     }
-
-    std::cout << std::endl;
   }
 
+  return sensors;
+}
+
+int main() {
   Nvidia nv;
   auto temp = nv.get_gpu_temperature();
   std::cout << "\nGPU Temp: " << temp << std::endl;
@@ -64,14 +50,10 @@ int main() {
   std::cout << pwm.readValue(controls[0], PWM_CONTROL_PROPERTY::ENABLE)
             << std::endl;
 
-  SensorsWrapper sens;
-  auto sensors = sens.getTemperatureSensors();
+  auto tempSensors = sensors();
 
-  std::cout << "\n";
-
-  for (auto sensor : sensors) {
-    std::cout << sens.getLabel(sensor) << ": " << sens.getValue(sensor)
-              << std::endl;
+  for (auto s : tempSensors) {
+    std::cout << s->getTemperature() << std::endl;
   }
 
   return 0;
