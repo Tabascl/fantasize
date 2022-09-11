@@ -1,6 +1,6 @@
 #include <include/nvml.h>
 
-#include <NvidiaTemperatureSensor.h>
+#include <sensor/NvidiaTemperatureSensor.h>
 
 using namespace std;
 

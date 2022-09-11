@@ -1,7 +1,7 @@
 #ifndef NVIDIA_H_
 #define NVIDIA_H_
 
-#include <TemperatureSensor.h>
+#include <sensor/TemperatureSensor.h>
 
 class NvidiaTemperatureSensor : public TemperatureSensor {
 public:

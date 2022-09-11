@@ -1,6 +1,6 @@
 #include <sensors/sensors.h>
 
-#include <HwmonTemperatureSensor.h>
+#include <sensor/HwmonTemperatureSensor.h>
 
 using namespace std;
 

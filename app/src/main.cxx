@@ -5,9 +5,9 @@
 
 #include <sensors/sensors.h>
 
-#include <HwmonTemperatureSensor.h>
-#include <NvidiaTemperatureSensor.h>
-#include <Pwm.h>
+#include <fan/Pwm.h>
+#include <sensor/HwmonTemperatureSensor.h>
+#include <sensor/NvidiaTemperatureSensor.h>
 
 #define CONFIG_FILE "/etc/conf.d/sensors"
 

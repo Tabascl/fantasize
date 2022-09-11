@@ -3,7 +3,7 @@
 
 #include <sensors/sensors.h>
 
-#include <TemperatureSensor.h>
+#include <sensor/TemperatureSensor.h>
 
 class HwmonTemperatureSensor : public TemperatureSensor {
 public:

@@ -5,7 +5,7 @@
 #include <regex>
 #include <string>
 
-#include <Pwm.h>
+#include <fan/Pwm.h>
 
 namespace fs = std::filesystem;
 using namespace std;

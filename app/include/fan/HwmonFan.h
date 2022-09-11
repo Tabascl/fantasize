@@ -1,11 +1,11 @@
 #ifndef HWMONFAN_H_
 #define HWMONFAN_H_
 
-#include <Fan.h>
+#include <fan/Fan.h>
 
 class HwmonFan : public Fan {
 public:
-  void PWM(int value) override;
+  void PWM(int percent) override;
   int RPM() override;
 };
 
