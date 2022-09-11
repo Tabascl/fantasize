@@ -5,7 +5,8 @@
 
 class TemperatureSensor {
 public:
-  virtual int getTemperature() = 0;
+  virtual int temperature() = 0;
+  virtual std::string name() = 0;
 };
 
 #endif // TEMPERATURESENSOR_H_

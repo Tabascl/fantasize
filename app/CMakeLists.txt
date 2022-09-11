@@ -9,7 +9,7 @@ find_package(Boost 1.79.0 COMPONENTS json)
 
 add_executable(app
   src/main.cxx
-  src/Nvidia.cxx
+  src/NvidiaTemperatureSensor.cxx
   src/Pwm.cxx
   src/SensorsWrapper.cxx
   src/HwmonTemperatureSensor.cxx
