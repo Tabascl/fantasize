@@ -11,6 +11,7 @@ add_executable(app
   src/main.cxx
   src/sensor/NvidiaTemperatureSensor.cxx
   src/fan/Pwm.cxx
+  src/fan/PwmControl.cxx
   src/SensorsWrapper.cxx
   src/sensor/HwmonTemperatureSensor.cxx
 )
