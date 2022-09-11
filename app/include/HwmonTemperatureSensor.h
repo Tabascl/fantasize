@@ -7,8 +7,10 @@
 
 class HwmonTemperatureSensor : public TemperatureSensor {
 public:
+  HwmonTemperatureSensor(sensors_chip_name chipName,
+                         sensors_subfeature subfeature);
+
   int getTemperature() override;
-  std::string toJson() override;
 
 private:
   sensors_chip_name mChipName;

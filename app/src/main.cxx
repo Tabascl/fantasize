@@ -16,7 +16,14 @@ int main() {
   int c = 0;
   for (const sensors_chip_name *i;
        (i = sensors_get_detected_chips(0, &c)) != NULL;) {
-    std::cout << i->prefix << std::endl;
+    std::cout << "Prefix: " << i->prefix << std::endl;
+
+    size_t size;
+    char *string;
+
+    sensors_snprintf_chip_name(string, size, i);
+
+    std::cout << std::string(string) << std::endl;
 
     int d = 0;
     for (const sensors_feature *j; (j = sensors_get_features(i, &d)) != NULL;) {
