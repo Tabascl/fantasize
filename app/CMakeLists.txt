@@ -9,11 +9,11 @@ find_package(Boost 1.79.0 COMPONENTS json)
 
 add_executable(app
   src/main.cxx
-  src/sensor/NvidiaTemperatureSensor.cxx
+  src/sensor/NvidiaSensor.cxx
   src/fan/Pwm.cxx
   src/fan/PwmControl.cxx
   src/SensorsWrapper.cxx
-  src/sensor/HwmonTemperatureSensor.cxx
+  src/sensor/HwmonSensor.cxx
 )
 
 set_property(TARGET app PROPERTY CXX_STANDARD 17)

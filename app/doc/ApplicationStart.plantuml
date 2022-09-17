@@ -1,0 +1,17 @@
+@startuml
+
+start
+:Initialization;
+
+if (Mapping exists) then (yes)
+  :Load mapping;
+else (no)
+  :Generate mapping;
+endif
+
+:Enter fan control loop;
+:Load Fan Curves;
+
+stop
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+interface Fan {
+        {abstract} void PWM(int percent)
+        {abstract} int RPM()
+}
+
+interface Sensor {
+        {abstract} int value()
+        {abstract} string name()
+}
+
+class HwmonFan {
+
+}
+
+Fan <|-- HwmonFan
+
+Sensor <|-- HwmonSensor
+Sensor <|-- NvidiaSensor
+
+HwmonFan - Sensor
+HwmonFan -- PwmControl
+
+
+@enduml

@@ -55,6 +55,12 @@ void PwmControl::enableManualControl() {
 
 void PwmControl::reset() {
   ofstream ostrm(mEnablePath, ios::trunc);
+
   ostrm << mInitialEnable;
+  ostrm.close();
+
+  ostrm.open(mModePath, ios::trunc);
+  ostrm << mInitialMode;
+
   ostrm.close();
 }
