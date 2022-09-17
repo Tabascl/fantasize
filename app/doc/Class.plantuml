@@ -9,8 +9,15 @@ interface Sensor {
         {abstract} string name()
 }
 
-class HwmonFan {
+class PwmControl {
+        +void pwm(int percent)
+        +int pwm()
 
+        + void enableManualControl()
+        + void reset()
+
+        - System Paths
+        - Initial Values
 }
 
 Fan <|-- HwmonFan

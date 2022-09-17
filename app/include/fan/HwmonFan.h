@@ -12,8 +12,8 @@ public:
   HwmonFan(std::unique_ptr<PwmControl> pwmControl,
            std::unique_ptr<Sensor> rpmSensor);
 
-  void PWM(int percent) override;
-  int RPM() override;
+  void pwm(int percent) override;
+  int rpm() override;
 
 private:
   std::unique_ptr<PwmControl> mPwmControl;

@@ -3,8 +3,8 @@
 
 class Fan {
 public:
-  virtual void PWM(int percent) = 0;
-  virtual int RPM() = 0;
+  virtual void pwm(int percent) = 0;
+  virtual int rpm() = 0;
 };
 
 #endif // FAN_H_
