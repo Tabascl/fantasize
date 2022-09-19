@@ -64,3 +64,7 @@ void PwmControl::reset() {
 
   ostrm.close();
 }
+
+const string PwmControl::toString() const {
+  return fs::path(mControlPath).filename();
+}

@@ -9,7 +9,8 @@ public:
   ~NvidiaSensor();
 
   int value() override;
-  std::string name() override;
+
+  const std::string toString() const override;
 };
 
 #endif // NVIDIASENSOR_H_

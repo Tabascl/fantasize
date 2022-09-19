@@ -18,4 +18,4 @@ int NvidiaSensor::value() {
   return static_cast<int>(temp);
 }
 
-string NvidiaSensor::name() { return "GPU"; }
+const std::string NvidiaSensor::toString() const { return "Nvidia GPU"; }

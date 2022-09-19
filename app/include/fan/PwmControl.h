@@ -3,11 +3,13 @@
 
 #include <string>
 
+#include <Printable.h>
+
 enum class PWM_CONTROL_PROPERTY { CONTROL, ENABLE, MODE };
 enum class PWM_ENABLE { FULL_SPEED = 0, MANUAL_CONTROL };
 enum class PWM_MODE { DC = 0, PWM };
 
-class PwmControl {
+class PwmControl : public Printable {
 public:
   PwmControl(std::string controlPath);
 
@@ -16,6 +18,8 @@ public:
 
   void enableManualControl();
   void reset();
+
+  const std::string toString() const override;
 
 private:
   int readValue(std::string path);

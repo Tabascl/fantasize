@@ -11,7 +11,7 @@ public:
               const sensors_subfeature *subfeature);
 
   int value() override;
-  std::string name() override;
+  const std::string toString() const override;
 
 private:
   const sensors_chip_name *mChipName;

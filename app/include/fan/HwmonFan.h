@@ -9,15 +9,15 @@
 
 class HwmonFan : public Fan {
 public:
-  HwmonFan(std::unique_ptr<PwmControl> pwmControl,
-           std::unique_ptr<Sensor> rpmSensor);
+  HwmonFan(std::shared_ptr<PwmControl> pwmControl,
+           std::shared_ptr<Sensor> rpmSensor);
 
   void pwm(int percent) override;
   int rpm() override;
 
 private:
-  std::unique_ptr<PwmControl> mPwmControl;
-  std::unique_ptr<Sensor> mRpmSensor;
+  std::shared_ptr<PwmControl> mPwmControl;
+  std::shared_ptr<Sensor> mRpmSensor;
 };
 
 #endif // HWMONFAN_H_
