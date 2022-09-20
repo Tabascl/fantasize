@@ -1,6 +1,7 @@
 #ifndef HWMONFAN_H_
 #define HWMONFAN_H_
 
+#include <boost/json/object.hpp>
 #include <memory>
 
 #include <fan/Fan.h>
@@ -14,6 +15,8 @@ public:
 
   void pwm(int percent) override;
   int rpm() override;
+
+  json toJson() const override;
 
 private:
   std::shared_ptr<PwmControl> mPwmControl;

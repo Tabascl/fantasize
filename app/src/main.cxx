@@ -1,9 +1,10 @@
-
 #include <Mapping.h>
+#include <Serializer.h>
 #include <sensor/NvidiaSensor.h>
 #include <sensor/SensorsWrapper.h>
 
 int main() {
+
   SensorsWrapper sensorsWrapper;
 
   auto tempSensors = sensorsWrapper.Sensors(SENSORS_SUBFEATURE_TEMP_INPUT);
@@ -14,7 +15,10 @@ int main() {
   auto controls = sensorsWrapper.PwmControls();
 
   Mapping m;
-  m.createMapping(pwmSensors, controls);
+  auto mapping = m.createMapping(pwmSensors, controls);
+
+  Serializer s;
+  s.Serialize(mapping);
 
   return 0;
 }

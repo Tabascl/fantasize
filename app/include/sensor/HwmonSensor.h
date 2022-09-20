@@ -13,6 +13,8 @@ public:
   int value() override;
   const std::string toString() const override;
 
+  json toJson() const override;
+
 private:
   const sensors_chip_name *mChipName;
   const sensors_feature *mFeature;

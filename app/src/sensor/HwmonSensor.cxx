@@ -1,3 +1,4 @@
+#include <boost/json/kind.hpp>
 #include <sensor/HwmonSensor.h>
 #include <sensors/sensors.h>
 
@@ -17,4 +18,9 @@ int HwmonSensor::value() {
 
 const string HwmonSensor::toString() const {
   return sensors_get_label(mChipName, mFeature);
+}
+
+json HwmonSensor::toJson() const {
+  json obj = {"HwmonSensor", toString()};
+  return obj;
 }

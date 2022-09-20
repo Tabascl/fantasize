@@ -11,6 +11,8 @@ public:
   int value() override;
 
   const std::string toString() const override;
+
+  json toJson() const override;
 };
 
 #endif // NVIDIASENSOR_H_

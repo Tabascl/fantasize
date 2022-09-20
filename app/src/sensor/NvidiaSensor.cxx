@@ -1,3 +1,4 @@
+#include <boost/json/object.hpp>
 #include <include/nvml.h>
 
 #include <sensor/NvidiaSensor.h>
@@ -19,3 +20,8 @@ int NvidiaSensor::value() {
 }
 
 const std::string NvidiaSensor::toString() const { return "Nvidia GPU"; }
+
+json NvidiaSensor::toJson() const {
+  json obj = {"NvidiaSensor", toString()};
+  return obj;
+}

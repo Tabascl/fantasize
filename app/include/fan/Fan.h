@@ -1,7 +1,9 @@
 #ifndef FAN_H_
 #define FAN_H_
 
-class Fan {
+#include <Serializable.h>
+
+class Fan : public Serializable {
 public:
   virtual void pwm(int percent) = 0;
   virtual int rpm() = 0;

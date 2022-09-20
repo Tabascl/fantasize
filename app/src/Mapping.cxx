@@ -19,9 +19,9 @@ Mapping::createMapping(vector<shared_ptr<Sensor>> rpmSensors,
   print("PWM controllers", pwmControls);
   vector<shared_ptr<Fan>> mapping;
 
-  cout << "Settings all fans to maximum speed" << endl;
+  cout << "Setting all fans to maximum speed" << endl;
   for (auto c : pwmControls) {
-    c->enableManualControl();
+    c->EnableManualControl();
     c->pwm(100);
   }
 
@@ -59,7 +59,7 @@ Mapping::createMapping(vector<shared_ptr<Sensor>> rpmSensors,
 
   cout << "Resetting all fans" << endl;
   for (auto c : pwmControls) {
-    c->reset();
+    c->Reset();
   }
 
   return mapping;

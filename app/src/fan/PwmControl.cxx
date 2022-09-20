@@ -1,5 +1,7 @@
+#include <boost/json/object.hpp>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
 #include <fan/PwmControl.h>
 
@@ -29,6 +31,11 @@ PwmControl::PwmControl(string controlPath) : mControlPath(controlPath) {
   istrm.close();
 }
 
+PwmControl::~PwmControl() {
+  cout << "Cleanup" << endl;
+  Reset();
+}
+
 void PwmControl::pwm(int percent) {
   int pwmValue = PWM_MAX_VALUE * percent / 100;
 
@@ -47,13 +54,13 @@ int PwmControl::pwm() {
   return value;
 }
 
-void PwmControl::enableManualControl() {
+void PwmControl::EnableManualControl() {
   ofstream ostrm(mEnablePath, ios::trunc);
   ostrm << static_cast<int>(PWM_ENABLE::MANUAL_CONTROL);
   ostrm.close();
 }
 
-void PwmControl::reset() {
+void PwmControl::Reset() {
   ofstream ostrm(mEnablePath, ios::trunc);
 
   ostrm << mInitialEnable;
@@ -67,4 +74,9 @@ void PwmControl::reset() {
 
 const string PwmControl::toString() const {
   return fs::path(mControlPath).filename();
+}
+
+json PwmControl::toJson() const {
+  json obj = {"PwmControl", toString()};
+  return obj;
 }
