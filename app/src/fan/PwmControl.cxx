@@ -77,6 +77,6 @@ const string PwmControl::toString() const {
 }
 
 json PwmControl::toJson() const {
-  json obj = {"PwmControl", toString()};
+  json obj = {"PwmControl", mControlPath};
   return obj;
 }

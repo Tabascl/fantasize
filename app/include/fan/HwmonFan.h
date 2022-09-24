@@ -18,6 +18,8 @@ public:
 
   json toJson() const override;
 
+  const std::string toString() const override;
+
 private:
   std::shared_ptr<PwmControl> mPwmControl;
   std::shared_ptr<Sensor> mRpmSensor;

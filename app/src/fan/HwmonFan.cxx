@@ -1,3 +1,4 @@
+#include "fan/PwmControl.h"
 #include <boost/json/object.hpp>
 #include <fan/HwmonFan.h>
 
@@ -13,6 +14,11 @@ int HwmonFan::rpm() { return mRpmSensor->value(); }
 
 json HwmonFan::toJson() const {
   json obj;
-  obj["HwmonFan"] = {mPwmControl->toJson(), mRpmSensor->toJson()};
+  obj = {mPwmControl->toJson(), mRpmSensor->toJson()};
   return obj;
+}
+
+const string HwmonFan::toString() const {
+  return "Fan!\nPwmControl: " + mPwmControl->toString() +
+         "\nRpmSensor: " + mRpmSensor->toString();
 }

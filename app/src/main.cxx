@@ -1,7 +1,13 @@
+#include <filesystem>
+#include <iostream>
+
 #include <Mapping.h>
 #include <Serializer.h>
+#include <fan/Fan.h>
 #include <sensor/NvidiaSensor.h>
 #include <sensor/SensorsWrapper.h>
+
+namespace fs = std::filesystem;
 
 int main() {
 
@@ -15,10 +21,20 @@ int main() {
   auto controls = sensorsWrapper.PwmControls();
 
   Mapping m;
-  auto mapping = m.createMapping(pwmSensors, controls);
-
   Serializer s;
-  s.Serialize(mapping);
+
+  std::vector<std::shared_ptr<Fan>> fans;
+
+  if (fs::exists(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME)) {
+    fans = s.Deserialize(pwmSensors);
+  } else {
+    fans = m.createMapping(pwmSensors, controls);
+    s.Serialize(fans);
+  }
+
+  for (auto f : fans) {
+    std::cout << f->toString() << std::endl;
+  }
 
   return 0;
 }

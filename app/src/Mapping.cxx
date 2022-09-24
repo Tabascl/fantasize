@@ -52,9 +52,8 @@ Mapping::createMapping(vector<shared_ptr<Sensor>> rpmSensors,
       }
     }
 
-    cout << "Setting fan back to 100% and wait for settling" << endl;
+    cout << "Setting fan back to 100%" << endl;
     c->pwm(100);
-    this_thread::sleep_for(chrono::seconds(SETTLE_TIMEOUT));
   }
 
   cout << "Resetting all fans" << endl;
