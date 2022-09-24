@@ -26,10 +26,10 @@ int main() {
   std::vector<std::shared_ptr<Fan>> fans;
 
   if (fs::exists(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME)) {
-    fans = s.Deserialize(pwmSensors);
+    fans = s.DeserializeFans(pwmSensors);
   } else {
     fans = m.createMapping(pwmSensors, controls);
-    s.Serialize(fans);
+    s.SerializeFans(fans);
   }
 
   for (auto f : fans) {

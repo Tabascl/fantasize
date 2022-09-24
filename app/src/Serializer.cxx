@@ -18,22 +18,18 @@ Serializer::Serializer() {
   }
 }
 
-void Serializer::Serialize(vector<shared_ptr<Fan>> fans) {
-  json fansArr;
-
-  for (auto f : fans) {
-    fansArr.emplace_back(f->toJson());
-  }
-
+void Serializer::SerializeFans(vector<shared_ptr<Fan>> fans) {
   json obj;
 
-  obj["fans"] = fansArr;
+  for (auto f : fans) {
+    obj["fans"].push_back(f->toJson());
+  }
 
   WriteJson(obj);
 }
 
 vector<shared_ptr<Fan>>
-Serializer::Deserialize(vector<shared_ptr<Sensor>> availableSensors) {
+Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
   vector<shared_ptr<Fan>> mapping;
 
   // Create a for the sensors first, then searching becomes cheaper
@@ -57,11 +53,35 @@ Serializer::Deserialize(vector<shared_ptr<Sensor>> availableSensors) {
 }
 
 void Serializer::WriteJson(json o) {
+  json obj;
+
+  if (fs::exists(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME)) {
+    auto obj = ReadJson();
+  }
+
+  for (auto &[key, value] : o.items()) {
+    obj[key] = value;
+  }
+
   ofstream ostrm(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME, ios::trunc);
-  ostrm << o.dump(2) << "\n";
+  ostrm << obj.dump(2) << "\n";
 }
 
 json Serializer::ReadJson() {
   ifstream istrm(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME);
   return json::parse(istrm);
+}
+
+void Serializer::SerializeTempSensors(vector<shared_ptr<Sensor>> sensors) {
+  json obj;
+
+  for (auto s : sensors) {
+    obj["tempSensors"].push_back(s->toJson());
+  }
+
+  WriteJson(obj);
+}
+vector<shared_ptr<Sensor>>
+DeserializeTempSensors(vector<shared_ptr<Sensor>> availableSensors) {
+  return vector<shared_ptr<Sensor>>();
 }
