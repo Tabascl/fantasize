@@ -29,8 +29,6 @@ void Serializer::Serialize(vector<shared_ptr<Fan>> fans) {
 
   obj["fans"] = fansArr;
 
-  cout << "Json obj: " << obj.dump(2) << endl;
-
   WriteJson(obj);
 }
 
