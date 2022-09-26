@@ -5,12 +5,12 @@
 #include <memory>
 
 #include <fan/Fan.h>
-#include <fan/PwmControl.h>
+#include <pwm/PWMControl.h>
 #include <sensor/Sensor.h>
 
 class HwmonFan : public Fan {
 public:
-  HwmonFan(std::shared_ptr<PwmControl> pwmControl,
+  HwmonFan(std::shared_ptr<PWMControl> pwmControl,
            std::shared_ptr<Sensor> rpmSensor);
 
   void pwm(int percent) override;
@@ -21,7 +21,7 @@ public:
   const std::string toString() const override;
 
 private:
-  std::shared_ptr<PwmControl> mPwmControl;
+  std::shared_ptr<PWMControl> mPWMControl;
   std::shared_ptr<Sensor> mRpmSensor;
 };
 

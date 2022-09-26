@@ -6,8 +6,8 @@
 
 #include <Serializer.h>
 #include <fan/HwmonFan.h>
-#include <fan/PwmControl.h>
-#include <sensor/HwmonSensor.h>
+#include <pwm/PWMControl.h>
+#include <sensor/LMSensor.h>
 
 using namespace std;
 namespace fs = filesystem;
@@ -41,8 +41,8 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
   auto data = ReadJson();
   try {
     for (auto &el : data["fans"].items()) {
-      auto pwmControl = make_shared<PwmControl>(el.value()["PwmControl"]);
-      auto rpmSensor = sensorMap[el.value()["HwmonSensor"]];
+      auto pwmControl = make_shared<PWMControl>(el.value()["PWMControl"]);
+      auto rpmSensor = sensorMap[el.value()["LMSensor"]];
 
       mapping.push_back(make_shared<HwmonFan>(pwmControl, rpmSensor));
     }

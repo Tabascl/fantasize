@@ -1,26 +1,26 @@
 #include <boost/json/kind.hpp>
-#include <sensor/HwmonSensor.h>
+#include <sensor/LMSensor.h>
 #include <sensors/sensors.h>
 
 using namespace std;
 
-HwmonSensor::HwmonSensor(const sensors_chip_name *chipName,
-                         const sensors_feature *feature,
-                         const sensors_subfeature *subfeature)
+LMSensor::LMSensor(const sensors_chip_name *chipName,
+                   const sensors_feature *feature,
+                   const sensors_subfeature *subfeature)
     : mChipName(chipName), mFeature(feature), mSubFeature(subfeature) {}
 
-int HwmonSensor::value() {
+int LMSensor::value() {
   double value;
   sensors_get_value(mChipName, mSubFeature->number, &value);
 
   return static_cast<int>(value);
 }
 
-const string HwmonSensor::toString() const {
+const string LMSensor::toString() const {
   return sensors_get_label(mChipName, mFeature);
 }
 
-json HwmonSensor::toJson() const {
+json LMSensor::toJson() const {
   json obj = {"HwmonSensor", toString()};
   return obj;
 }

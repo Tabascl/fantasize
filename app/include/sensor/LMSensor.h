@@ -5,10 +5,10 @@
 
 #include <sensor/Sensor.h>
 
-class HwmonSensor : public Sensor {
+class LMSensor : public Sensor {
 public:
-  HwmonSensor(const sensors_chip_name *chipName, const sensors_feature *feature,
-              const sensors_subfeature *subfeature);
+  LMSensor(const sensors_chip_name *chipName, const sensors_feature *feature,
+           const sensors_subfeature *subfeature);
 
   int value() override;
   const std::string toString() const override;

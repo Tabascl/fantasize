@@ -11,10 +11,10 @@ enum class PWM_CONTROL_PROPERTY { CONTROL, ENABLE, MODE };
 enum class PWM_ENABLE { FULL_SPEED = 0, MANUAL_CONTROL };
 enum class PWM_MODE { DC = 0, PWM };
 
-class PwmControl : public Printable, public Serializable {
+class PWMControl : public Printable, public Serializable {
 public:
-  PwmControl(std::string controlPath);
-  ~PwmControl();
+  PWMControl(std::string controlPath);
+  ~PWMControl();
 
   void pwm(int percent);
   int pwm();

@@ -1,26 +1,22 @@
 #include <filesystem>
 #include <iostream>
 
-#include <Mapping.h>
+#include <FanGenerator.h>
 #include <Serializer.h>
 #include <fan/Fan.h>
-#include <sensor/NvidiaSensor.h>
-#include <sensor/SensorsWrapper.h>
+#include <pwm/PWMControlFacade.h>
+#include <sensor/SensorManager.h>
 
 namespace fs = std::filesystem;
 
 int main() {
+  SensorManager sensorManager;
+  auto pwmSensors = sensorManager.RPMSensors();
 
-  SensorsWrapper sensorsWrapper;
+  PWMControlFacade pwmControlFacade;
+  auto controls = pwmControlFacade.PWMControls();
 
-  auto tempSensors = sensorsWrapper.Sensors(SENSORS_SUBFEATURE_TEMP_INPUT);
-  tempSensors.push_back(std::make_shared<NvidiaSensor>());
-
-  auto pwmSensors = sensorsWrapper.Sensors(SENSORS_SUBFEATURE_FAN_INPUT);
-
-  auto controls = sensorsWrapper.PwmControls();
-
-  Mapping m;
+  FanGenerator m;
   Serializer s;
 
   std::vector<std::shared_ptr<Fan>> fans;
@@ -28,7 +24,7 @@ int main() {
   if (fs::exists(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME)) {
     fans = s.DeserializeFans(pwmSensors);
   } else {
-    fans = m.createMapping(pwmSensors, controls);
+    fans = m.FindFans(pwmSensors, controls);
     s.SerializeFans(fans);
   }
 

@@ -1,20 +1,21 @@
+#include "FanGenerator.h"
 #include <chrono>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <thread>
 
-#include <Mapping.h>
+#include <FanGenerator.h>
 #include <fan/HwmonFan.h>
-#include <fan/PwmControl.h>
+#include <pwm/PWMControl.h>
 
 #define SETTLE_TIMEOUT 5
 
 using namespace std;
 
 vector<shared_ptr<Fan>>
-Mapping::createMapping(vector<shared_ptr<Sensor>> rpmSensors,
-                       vector<shared_ptr<PwmControl>> pwmControls) {
+FanGenerator::FindFans(vector<shared_ptr<Sensor>> rpmSensors,
+                       vector<shared_ptr<PWMControl>> pwmControls) {
   print("RPM Sensors", rpmSensors);
   print("PWM controllers", pwmControls);
   vector<shared_ptr<Fan>> mapping;
@@ -65,7 +66,7 @@ Mapping::createMapping(vector<shared_ptr<Sensor>> rpmSensors,
 }
 
 template <class Printable>
-void Mapping::print(string listLabel, vector<shared_ptr<Printable>> list) {
+void FanGenerator::print(string listLabel, vector<shared_ptr<Printable>> list) {
   cout << listLabel << ": " << endl;
 
   for (auto i : list) {

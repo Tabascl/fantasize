@@ -1,32 +1,71 @@
 @startuml
-interface Fan {
-        {abstract} void PWM(int percent)
-        {abstract} int RPM()
-}
-
 interface Sensor {
-        {abstract} int value()
-        {abstract} string name()
+        + {abstract} int Value()
 }
 
-class PwmControl {
-        +void pwm(int percent)
-        +int pwm()
+class LMSensor {
+        - Identifier: string
 
-        + void enableManualControl()
-        + void reset()
-
-        - System Paths
-        - Initial Values
+        + int Value()
 }
 
-Fan <|-- HwmonFan
+class GPUSensor {
+        + int Value()
+}
 
-Sensor <|-- HwmonSensor
-Sensor <|-- NvidiaSensor
+class HWMONFan {
+        - Identifier: string
+        - RPMSensor: Sensor
+        - PWMControl: PWMControl
 
-HwmonFan - Sensor
-HwmonFan -- PwmControl
+        + int RPM()
+        + void PWM(value: int)
+}
 
+class PWMControl {
+        + void PWM(value: int)
+        + int PWM()
+}
 
+class LMSensorsFacade
+{
+        + List<Sensor> RPMSensors()
+        + List<Sensor> TemperatureSensors()
+}
+
+class GPUSensorsFacade
+{
+        + List<Sensor> TemperatureSensors()
+}
+
+class SensorManager
+{
+        - LMSensorsFacade
+        - GPUSensorsFacade
+
+        + List<Sensor> RPMSensors()
+        + List<Sensor> TemperatureSensors()
+}
+
+class FanGenerator
+{
+        + FanList FindFans(List<RPMSensor>, List<PWMControl>)
+}
+
+HWMONFan -- Sensor
+HWMONFan -- PWMControl
+
+Sensor <|-- LMSensor
+Sensor <|-- GPUSensor
+
+SensorManager - Sensor
+
+LMSensor -- LMSensorsFacade
+GPUSensor -- GPUSensorsFacade
+LMSensorsFacade -- SensorManager
+GPUSensorsFacade -- SensorManager
+
+FanGenerator - HWMONFan
+FanGenerator - SensorManager
+FanGenerator - PWMControl
 @enduml

@@ -5,14 +5,14 @@
 #include <vector>
 
 #include <fan/Fan.h>
-#include <fan/PwmControl.h>
+#include <pwm/PWMControl.h>
 #include <sensor/Sensor.h>
 
-class Mapping {
+class FanGenerator {
 public:
   std::vector<std::shared_ptr<Fan>>
-  createMapping(std::vector<std::shared_ptr<Sensor>> rpmSensors,
-                std::vector<std::shared_ptr<PwmControl>> pwmControls);
+  FindFans(std::vector<std::shared_ptr<Sensor>> rpmSensors,
+           std::vector<std::shared_ptr<PWMControl>> pwmControls);
 
 private:
   template <class Printable>

@@ -1,0 +1,23 @@
+@startuml
+participant main
+participant LMSensorsFacade as lms
+participant GPUSensor as gpus
+participant PWMControlFactory as pwmfc
+
+main -> lms: RPMSensors()
+main <-- lms: vector<Sensor>
+
+main -> lms: TemperatureSensors()
+main <-- lms: vector<Sensor>
+
+main -> gpus: GPUSensor()
+main <-- gpus: Sensor
+note right
+        Add GPUSensor to list
+        of temperature sensors
+end note
+
+main -> pwmfc: PWMControllers()
+main <-- pwmfc: vector<PWMControl>
+
+@enduml

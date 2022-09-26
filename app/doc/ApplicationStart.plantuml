@@ -3,14 +3,14 @@
 start
 :Initialization;
 
-if (Mapping exists) then (yes)
-  :Load mapping;
+if (Config exists) then (yes)
+  :Load config;
 else (no)
-  :Generate mapping;
+  :Do first-start initialization;
 endif
 
-:Enter fan control loop;
 :Load Fan Curves;
+:Enter fan control loop;
 
 stop
 

@@ -9,15 +9,17 @@ find_package(nlohmann_json 3.11.2 REQUIRED)
 
 add_executable(app
   src/main.cxx
-  src/sensor/SensorsWrapper.cxx
+  src/sensor/LMSensorsFacade.cxx
+  src/sensor/GPUSensorsFacade.cxx
   src/sensor/Sensor.cxx
   src/sensor/NvidiaSensor.cxx
-  src/sensor/HwmonSensor.cxx
-  src/fan/Pwm.cxx
-  src/fan/PwmControl.cxx
+  src/sensor/LMSensor.cxx
+  src/pwm/PWMControl.cxx
+  src/pwm/PWMControlFacade.cxx
   src/fan/HwmonFan.cxx
-  src/Mapping.cxx
+  src/FanGenerator.cxx
   src/Serializer.cxx
+  src/sensor/SensorManager.cxx
 )
 
 set_property(TARGET app PROPERTY CXX_STANDARD 17)

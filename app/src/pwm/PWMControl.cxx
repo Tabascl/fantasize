@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <fan/PwmControl.h>
+#include <pwm/PWMControl.h>
 
 #define PWM_POSTFIX_ENABLE "_enable"
 #define PWM_POSTFIX_MODE "_mode"
@@ -13,7 +13,7 @@
 using namespace std;
 namespace fs = filesystem;
 
-PwmControl::PwmControl(string controlPath) : mControlPath(controlPath) {
+PWMControl::PWMControl(string controlPath) : mControlPath(controlPath) {
   fs::path pathEnable(mControlPath + PWM_POSTFIX_ENABLE);
   fs::path pathMode(mControlPath + PWM_POSTFIX_MODE);
 
@@ -31,12 +31,12 @@ PwmControl::PwmControl(string controlPath) : mControlPath(controlPath) {
   istrm.close();
 }
 
-PwmControl::~PwmControl() {
+PWMControl::~PWMControl() {
   cout << "Cleanup" << endl;
   Reset();
 }
 
-void PwmControl::pwm(int percent) {
+void PWMControl::pwm(int percent) {
   int pwmValue = PWM_MAX_VALUE * percent / 100;
 
   ofstream ostrm(mControlPath, ios::trunc);
@@ -44,7 +44,7 @@ void PwmControl::pwm(int percent) {
   ostrm.close();
 }
 
-int PwmControl::pwm() {
+int PWMControl::pwm() {
   int value;
   ifstream istrm;
 
@@ -54,13 +54,13 @@ int PwmControl::pwm() {
   return value;
 }
 
-void PwmControl::EnableManualControl() {
+void PWMControl::EnableManualControl() {
   ofstream ostrm(mEnablePath, ios::trunc);
   ostrm << static_cast<int>(PWM_ENABLE::MANUAL_CONTROL);
   ostrm.close();
 }
 
-void PwmControl::Reset() {
+void PWMControl::Reset() {
   ofstream ostrm(mEnablePath, ios::trunc);
 
   ostrm << mInitialEnable;
@@ -72,11 +72,11 @@ void PwmControl::Reset() {
   ostrm.close();
 }
 
-const string PwmControl::toString() const {
+const string PWMControl::toString() const {
   return fs::path(mControlPath).filename();
 }
 
-json PwmControl::toJson() const {
-  json obj = {"PwmControl", mControlPath};
+json PWMControl::toJson() const {
+  json obj = {"PWMControl", mControlPath};
   return obj;
 }

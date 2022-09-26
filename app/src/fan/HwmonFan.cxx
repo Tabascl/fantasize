@@ -1,24 +1,24 @@
-#include "fan/PwmControl.h"
+#include "pwm/PWMControl.h"
 #include <boost/json/object.hpp>
 #include <fan/HwmonFan.h>
 
 using namespace std;
 
-HwmonFan::HwmonFan(shared_ptr<PwmControl> pwmControl,
+HwmonFan::HwmonFan(shared_ptr<PWMControl> pwmControl,
                    shared_ptr<Sensor> rpmSensor)
-    : mPwmControl(pwmControl), mRpmSensor(rpmSensor) {}
+    : mPWMControl(pwmControl), mRpmSensor(rpmSensor) {}
 
-void HwmonFan::pwm(int percent) { mPwmControl->pwm(percent); }
+void HwmonFan::pwm(int percent) { mPWMControl->pwm(percent); }
 
 int HwmonFan::rpm() { return mRpmSensor->value(); }
 
 json HwmonFan::toJson() const {
   json obj;
-  obj = {mPwmControl->toJson(), mRpmSensor->toJson()};
+  obj = {mPWMControl->toJson(), mRpmSensor->toJson()};
   return obj;
 }
 
 const string HwmonFan::toString() const {
-  return "Fan!\nPwmControl: " + mPwmControl->toString() +
+  return "Fan!\nPWMControl: " + mPWMControl->toString() +
          "\nRpmSensor: " + mRpmSensor->toString();
 }
