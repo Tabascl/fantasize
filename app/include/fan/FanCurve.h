@@ -1,0 +1,27 @@
+#ifndef FANCURVE_H_
+#define FANCURVE_H_
+
+#include <memory>
+#include <vector>
+
+#include <fan/HwmonFan.h>
+#include <sensor/Sensor.h>
+
+struct FanStep {
+  int Temp;
+  int Percent;
+};
+
+class FanCurve {
+public:
+  void DoFanControl();
+
+private:
+  int AggregateTemperature();
+
+  std::vector<FanStep> mSteps;
+  std::vector<std::shared_ptr<Sensor>> mTempSensors;
+  std::vector<std::shared_ptr<HwmonFan>> mFans;
+};
+
+#endif // FANCURVE_H_

@@ -56,34 +56,31 @@ class FanGenerator
         + FanList FindFans(List<RPMSensor>, List<PWMControl>)
 }
 
-struct Coordinate
+struct FanStep
 {
-        int X
-        int Y
-}
-
-enum SensorAggregateFunction
-{
-        MIN
-        MAX
-        AVG
+        int Temp
+        int Percent
 }
 
 class FanCurve
 {
-        - List<Coordinate> Steps
+        - List<FanStep> Steps
         - List<Sensor> TempSensor
-        - SensorAggregateFunction Fun
-        - HWMONFan Fan
+        - List<HWMONFan> Fan
 
-        + int TargetPWMPercent()
+        + DoFanControl()
 }
 
 class FanController
 {
-        - List<HWMONFan>
+        - List<FanCurve>
 
         + void StartFanControlLoop()
+}
+
+class ConfigManager
+{
+
 }
 
 HWMONFan -- Sensor
@@ -107,7 +104,7 @@ FanGenerator - SensorManager
 FanGenerator - PWMControl
 
 Sensor - FanCurve
-FanCurve -- Coordinate
+FanCurve -- FanStep
 FanCurve -- SensorAggregateFunction
 
 FanController -- FanCurve
