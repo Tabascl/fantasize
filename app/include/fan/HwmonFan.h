@@ -23,6 +23,7 @@ public:
 private:
   std::shared_ptr<PWMControl> mPWMControl;
   std::shared_ptr<Sensor> mRpmSensor;
+  std::string mLabel;
 };
 
 #endif // HWMONFAN_H_

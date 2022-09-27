@@ -14,7 +14,7 @@ int HwmonFan::rpm() { return mRpmSensor->value(); }
 
 json HwmonFan::toJson() const {
   json obj;
-  obj = {mPWMControl->toJson(), mRpmSensor->toJson()};
+  obj = {mPWMControl->toJson(), mRpmSensor->toJson(), mLabel};
   return obj;
 }
 

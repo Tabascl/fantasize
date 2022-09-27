@@ -4,7 +4,7 @@ interface Sensor {
 }
 
 class LMSensor {
-        - Identifier: string
+        - string Label
 
         + int Value()
 }
@@ -14,17 +14,21 @@ class GPUSensor {
 }
 
 class HWMONFan {
-        - Identifier: string
-        - RPMSensor: Sensor
-        - PWMControl: PWMControl
+        - string Label
+        - Sensor RPMSensor
+        - PWMControl PWMControl
 
         + int RPM()
-        + void PWM(value: int)
+        + void PWMPercent(int value)
 }
 
 class PWMControl {
-        + void PWM(value: int)
+        + void PWMPercent(int value)
         + int PWM()
+}
+
+class PWMControlFacade {
+        + List<PWMControl> PWMControls()
 }
 
 class LMSensorsFacade
@@ -52,8 +56,41 @@ class FanGenerator
         + FanList FindFans(List<RPMSensor>, List<PWMControl>)
 }
 
+struct Coordinate
+{
+        int X
+        int Y
+}
+
+enum SensorAggregateFunction
+{
+        MIN
+        MAX
+        AVG
+}
+
+class FanCurve
+{
+        - List<Coordinate> Steps
+        - List<Sensor> TempSensor
+        - SensorAggregateFunction Fun
+        - HWMONFan Fan
+
+        + int TargetPWMPercent()
+}
+
+class FanController
+{
+        - List<HWMONFan>
+
+        + void StartFanControlLoop()
+}
+
 HWMONFan -- Sensor
 HWMONFan -- PWMControl
+HWMONFan - FanCurve
+
+PWMControl -- PWMControlFacade
 
 Sensor <|-- LMSensor
 Sensor <|-- GPUSensor
@@ -68,4 +105,10 @@ GPUSensorsFacade -- SensorManager
 FanGenerator - HWMONFan
 FanGenerator - SensorManager
 FanGenerator - PWMControl
+
+Sensor - FanCurve
+FanCurve -- Coordinate
+FanCurve -- SensorAggregateFunction
+
+FanController -- FanCurve
 @enduml

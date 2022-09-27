@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <iostream>
 
 #include <FanGenerator.h>
@@ -6,8 +5,6 @@
 #include <fan/Fan.h>
 #include <pwm/PWMControlFacade.h>
 #include <sensor/SensorManager.h>
-
-namespace fs = std::filesystem;
 
 int main() {
   SensorManager sensorManager;
@@ -21,12 +18,7 @@ int main() {
 
   std::vector<std::shared_ptr<Fan>> fans;
 
-  if (fs::exists(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME)) {
-    fans = s.DeserializeFans(pwmSensors);
-  } else {
-    fans = m.FindFans(pwmSensors, controls);
-    s.SerializeFans(fans);
-  }
+  fans = m.FindFans(pwmSensors, controls);
 
   for (auto f : fans) {
     std::cout << f->toString() << std::endl;
