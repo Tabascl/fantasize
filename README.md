@@ -1,3 +1,3 @@
 # Fantasize
 
-Readme coming soon...
+[Github Mirror Repo](https://github.com/Tabascl/fantasize)
