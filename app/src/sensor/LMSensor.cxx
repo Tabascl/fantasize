@@ -21,6 +21,6 @@ const string LMSensor::toString() const {
 }
 
 json LMSensor::toJson() const {
-  json obj = {"HwmonSensor", toString()};
+  json obj = {"LMSensor", toString()};
   return obj;
 }

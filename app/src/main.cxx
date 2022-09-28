@@ -1,8 +1,11 @@
+#include <execution>
 #include <iostream>
 
 #include <FanGenerator.h>
 #include <Serializer.h>
 #include <fan/Fan.h>
+#include <memory>
+#include <pstl/glue_execution_defs.h>
 #include <pwm/PWMControlFacade.h>
 #include <sensor/SensorManager.h>
 
@@ -18,11 +21,14 @@ int main() {
 
   std::vector<std::shared_ptr<Fan>> fans;
 
-  fans = m.FindFans(pwmSensors, controls);
+  // fans = m.FindFans(pwmSensors, controls);
+  // s.SerializeFans(fans);
+  fans = s.DeserializeFans(pwmSensors);
 
-  for (auto f : fans) {
-    std::cout << f->toString() << std::endl;
-  }
+  std::for_each(std::execution::par, std::begin(fans), std::end(fans),
+                [](auto &&f) { f->FindMinPWM(); });
+
+  s.SerializeFans(fans);
 
   return 0;
 }

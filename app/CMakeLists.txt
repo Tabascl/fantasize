@@ -22,7 +22,7 @@ add_executable(app
   src/sensor/SensorManager.cxx
 )
 
-set_property(TARGET app PROPERTY CXX_STANDARD 17)
+set_property(TARGET app PROPERTY CXX_STANDARD 20)
 
 target_include_directories(app PUBLIC include /opt/cuda)
-target_link_libraries(app PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json)
+target_link_libraries(app PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json tbb)

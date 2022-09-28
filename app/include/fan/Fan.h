@@ -6,8 +6,11 @@
 
 class Fan : public Serializable, public Printable {
 public:
-  virtual void pwm(int percent) = 0;
-  virtual int rpm() = 0;
+  virtual void PWM(int percent) = 0;
+  virtual int RPM() = 0;
+
+  virtual void FindMinPWM() = 0;
+  virtual void FindStartPWM() = 0;
 };
 
 #endif // FAN_H_

@@ -1,4 +1,3 @@
-#include "FanGenerator.h"
 #include <chrono>
 #include <iostream>
 #include <map>
