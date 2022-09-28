@@ -1,81 +1,90 @@
 @startuml
-interface Sensor {
-        + {abstract} int Value()
+
+package sensor {
+        interface Sensor {
+                + {abstract} int Value()
+        }
+
+        class LMSensor {
+                - string Label
+
+                + int Value()
+        }
+
+        class GPUSensor {
+                + int Value()
+        }
+
+        class LMSensorsFacade
+        {
+                + List<Sensor> RPMSensors()
+                + List<Sensor> TemperatureSensors()
+        }
+
+        class GPUSensorsFacade
+        {
+                + List<Sensor> TemperatureSensors()
+        }
+
+        class SensorManager
+        {
+                - LMSensorsFacade
+                - GPUSensorsFacade
+
+                + List<Sensor> RPMSensors()
+                + List<Sensor> TemperatureSensors()
+        }
 }
 
-class LMSensor {
-        - string Label
-
-        + int Value()
-}
-
-class GPUSensor {
-        + int Value()
-}
-
-class HWMONFan {
-        - string Label
-        - Sensor RPMSensor
-        - PWMControl PWMControl
-
-        + int RPM()
-        + void PWMPercent(int value)
-}
-
-class PWMControl {
-        + void PWMPercent(int value)
-        + int PWM()
-}
-
-class PWMControlFacade {
-        + List<PWMControl> PWMControls()
-}
-
-class LMSensorsFacade
+package fan
 {
-        + List<Sensor> RPMSensors()
-        + List<Sensor> TemperatureSensors()
+        class HWMONFan {
+                - string Label
+                - Sensor RPMSensor
+                - PWMControl PWMControl
+
+                + int RPM()
+                + void PWMPercent(int value)
+        }
+
+        class FanGenerator
+        {
+                + FanList FindFans(List<RPMSensor>, List<PWMControl>)
+        }
+
+        struct FanStep
+        {
+                int Temp
+                int Percent
+        }
+
+        class FanCurve
+        {
+                - List<FanStep> Steps
+                - List<Sensor> TempSensor
+                - List<HWMONFan> Fan
+
+                + DoFanControl()
+        }
+
+        class FanController
+        {
+                - List<FanCurve>
+
+                + void StartFanControlLoop()
+        }
 }
 
-class GPUSensorsFacade
+package pwm
 {
-        + List<Sensor> TemperatureSensors()
-}
+        class PWMControl {
+                + void PWMPercent(int value)
+                + int PWM()
+        }
 
-class SensorManager
-{
-        - LMSensorsFacade
-        - GPUSensorsFacade
-
-        + List<Sensor> RPMSensors()
-        + List<Sensor> TemperatureSensors()
-}
-
-class FanGenerator
-{
-        + FanList FindFans(List<RPMSensor>, List<PWMControl>)
-}
-
-struct FanStep
-{
-        int Temp
-        int Percent
-}
-
-class FanCurve
-{
-        - List<FanStep> Steps
-        - List<Sensor> TempSensor
-        - List<HWMONFan> Fan
-
-        + DoFanControl()
-}
-
-class FanController
-{
-        - List<FanCurve>
-
-        + void StartFanControlLoop()
+        class PWMControlFacade {
+                + List<PWMControl> PWMControls()
+        }
 }
 
 class ConfigManager
@@ -85,9 +94,9 @@ class ConfigManager
 
 HWMONFan -- Sensor
 HWMONFan -- PWMControl
-HWMONFan - FanCurve
+HWMONFan -- FanCurve
 
-PWMControl -- PWMControlFacade
+PWMControlFacade -- PWMControl
 
 Sensor <|-- LMSensor
 Sensor <|-- GPUSensor
@@ -99,13 +108,12 @@ GPUSensor -- GPUSensorsFacade
 LMSensorsFacade -- SensorManager
 GPUSensorsFacade -- SensorManager
 
-FanGenerator - HWMONFan
-FanGenerator - SensorManager
-FanGenerator - PWMControl
+FanGenerator -- HWMONFan
+FanGenerator -- SensorManager : uses >
+FanGenerator -- PWMControlFacade : uses >
 
 Sensor - FanCurve
 FanCurve -- FanStep
-FanCurve -- SensorAggregateFunction
 
-FanController -- FanCurve
+FanCurve -- FanController
 @enduml
