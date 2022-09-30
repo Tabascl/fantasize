@@ -11,11 +11,14 @@
 class HwmonFan : public Fan {
 public:
   HwmonFan(std::shared_ptr<PWMControl> pwmControl,
-           std::shared_ptr<Sensor> rpmSensor, std::string label = "",
-           int minPWM = 0, int startPWM = 0);
+           std::shared_ptr<Sensor> rpmSensor);
 
   void PWM(int percent) override;
   int RPM() override;
+
+  void Label(std::string label) override;
+  void MinPWM(int value) override;
+  void StartPWM(int value) override;
 
   void FindMinPWM() override;
   void FindStartPWM() override;

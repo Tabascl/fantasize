@@ -46,6 +46,9 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
       auto pwmControl = make_shared<PWMControl>(el.value()["PWMControl"]);
       auto rpmSensor = sensorMap[el.value()["LMSensor"]];
 
+      int minPWM = el.value()["MinPWM"];
+      string label = el.value()["Label"];
+
       mapping.push_back(make_shared<HwmonFan>(pwmControl, rpmSensor));
     }
   } catch (const std::exception &e) {
@@ -58,7 +61,7 @@ void Serializer::WriteJson(json o) {
   json obj;
 
   if (fs::exists(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME)) {
-    auto obj = ReadJson();
+    obj = ReadJson();
   }
 
   for (auto &[key, value] : o.items()) {

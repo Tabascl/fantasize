@@ -4,6 +4,7 @@
 #include <FanGenerator.h>
 #include <Serializer.h>
 #include <fan/Fan.h>
+#include <fan/FanLabeler.h>
 #include <memory>
 #include <pstl/glue_execution_defs.h>
 #include <pwm/PWMControlFacade.h>
@@ -26,7 +27,14 @@ int main() {
   // s.SerializeFans(fans);
   fans = s.DeserializeFans(pwmSensors);
 
-  auto curves = s.DeserializeFanCurves(tempSensors, fans);
+  std::for_each(std::execution::par, std::begin(fans), std::end(fans),
+                [](auto &&f) { f->FindMinPWM(); });
+
+  // auto curves = s.DeserializeFanCurves(tempSensors, fans);
+  FanLabeler labeler;
+  labeler.RunFanLabelInteraction(fans);
+
+  s.SerializeFans(fans);
 
   return 0;
 }

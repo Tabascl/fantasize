@@ -18,6 +18,7 @@ add_executable(app
   src/pwm/PWMControlFacade.cxx
   src/fan/HwmonFan.cxx
   src/fan/FanCurve.cxx
+  src/fan/FanLabeler.cxx
   src/FanGenerator.cxx
   src/Serializer.cxx
   src/sensor/SensorManager.cxx

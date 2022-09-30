@@ -12,19 +12,31 @@
 using namespace std;
 
 HwmonFan::HwmonFan(std::shared_ptr<PWMControl> pwmControl,
-                   std::shared_ptr<Sensor> rpmSensor, std::string label,
-                   int minPWM, int startPWM)
-    : mPWMControl(pwmControl), mRpmSensor(rpmSensor), mLabel(label),
-      mMinPWM(minPWM), mStartPWM(startPWM) {
+                   std::shared_ptr<Sensor> rpmSensor)
+    : mPWMControl(pwmControl), mRpmSensor(rpmSensor) {
+  cout << "Enabling manual control" << endl;
   mPWMControl->EnableManualControl();
 }
 
-void HwmonFan::PWM(int percent) { mPWMControl->pwm(percent); }
+void HwmonFan::PWM(int percent) {
+  if (percent < mMinPWM) {
+    mPWMControl->pwm(mMinPWM);
+  } else {
+    mPWMControl->pwm(percent);
+  }
+}
 
 int HwmonFan::RPM() { return mRpmSensor->value(); }
 
+void HwmonFan::Label(std::string label) { mLabel = label; }
+
+void HwmonFan::MinPWM(int value) { mMinPWM = value; }
+
+void HwmonFan::StartPWM(int value) { mStartPWM = value; }
+
 void HwmonFan::FindMinPWM() {
   int minPWM = 0;
+  mMinPWM = 0;
 
   for (int curPWM = 100; curPWM > 0; curPWM -= 5) {
     PWM(curPWM);
@@ -52,7 +64,7 @@ json HwmonFan::toJson() const {
   json obj;
   obj = {mPWMControl->toJson(),
          mRpmSensor->toJson(),
-         {"label", mLabel},
+         {"Label", mLabel},
          {"MinPWM", mMinPWM}};
   return obj;
 }
