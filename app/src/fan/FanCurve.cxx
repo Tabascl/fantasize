@@ -4,6 +4,11 @@
 
 using namespace std;
 
+FanCurve::FanCurve(std::vector<FanStep> steps,
+                   std::vector<std::shared_ptr<Sensor>> sensors,
+                   std::vector<std::shared_ptr<Fan>> fans)
+    : mSteps(steps), mTempSensors(sensors), mFans(fans) {}
+
 void FanCurve::DoFanControl() {
   int temp = AggregateTemperature();
 
@@ -30,7 +35,7 @@ void FanCurve::DoFanControl() {
   int targetFanSpeed = p0 + ((p1 - p0) / (t1 - t0)) * (temp - t0);
 
   for (auto f : mFans) {
-    f->pwm(targetFanSpeed);
+    f->PWM(targetFanSpeed);
   }
 }
 

@@ -1,3 +1,5 @@
+#include "fan/FanCurve.h"
+#include "sensor/Sensor.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -72,16 +74,42 @@ json Serializer::ReadJson() {
   return json::parse(istrm);
 }
 
-void Serializer::SerializeTempSensors(vector<shared_ptr<Sensor>> sensors) {
-  json obj;
+vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
+    std::vector<std::shared_ptr<Sensor>> availableSensors,
+    std::vector<std::shared_ptr<Fan>> availableFans) {
+  auto data = ReadJson();
 
-  for (auto s : sensors) {
-    obj["tempSensors"].push_back(s->toJson());
+  map<string, shared_ptr<Sensor>> sensorMap;
+  for (auto s : availableSensors) {
+    sensorMap[s->toString()] = s;
   }
 
-  WriteJson(obj);
-}
-vector<shared_ptr<Sensor>>
-DeserializeTempSensors(vector<shared_ptr<Sensor>> availableSensors) {
-  return vector<shared_ptr<Sensor>>();
+  map<string, shared_ptr<Fan>> fanMap;
+  for (auto f : availableFans) {
+    fanMap[f->toString()] = f;
+  }
+
+  vector<shared_ptr<FanCurve>> curves;
+
+  for (auto &el : data["fancurves"].items()) {
+    vector<FanStep> steps;
+    vector<shared_ptr<Sensor>> sensors;
+    vector<shared_ptr<Fan>> fans;
+
+    for (auto &step : el.value()["FanSteps"].items()) {
+      FanStep fanStep{step.value()[0], step.value()[1]};
+    }
+
+    for (auto &sensor : el.value()["Sensors"].items()) {
+      sensors.push_back(sensorMap[sensor.value()]);
+    }
+
+    for (auto &fan : el.value()["Fans"].items()) {
+      fans.push_back(fanMap[fan.value()]);
+    }
+
+    curves.push_back(make_shared<FanCurve>(steps, sensors, fans));
+  }
+
+  return curves;
 }

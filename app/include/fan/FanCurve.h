@@ -14,6 +14,10 @@ struct FanStep {
 
 class FanCurve {
 public:
+  FanCurve(std::vector<FanStep> steps,
+           std::vector<std::shared_ptr<Sensor>> sensors,
+           std::vector<std::shared_ptr<Fan>> fans);
+
   void DoFanControl();
 
 private:
@@ -21,7 +25,7 @@ private:
 
   std::vector<FanStep> mSteps;
   std::vector<std::shared_ptr<Sensor>> mTempSensors;
-  std::vector<std::shared_ptr<HwmonFan>> mFans;
+  std::vector<std::shared_ptr<Fan>> mFans;
 };
 
 #endif // FANCURVE_H_

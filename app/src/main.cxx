@@ -12,6 +12,7 @@
 int main() {
   SensorManager sensorManager;
   auto pwmSensors = sensorManager.RPMSensors();
+  auto tempSensors = sensorManager.TemperatureSensors();
 
   PWMControlFacade pwmControlFacade;
   auto controls = pwmControlFacade.PWMControls();
@@ -25,10 +26,7 @@ int main() {
   // s.SerializeFans(fans);
   fans = s.DeserializeFans(pwmSensors);
 
-  std::for_each(std::execution::par, std::begin(fans), std::end(fans),
-                [](auto &&f) { f->FindMinPWM(); });
-
-  s.SerializeFans(fans);
+  auto curves = s.DeserializeFanCurves(tempSensors, fans);
 
   return 0;
 }
