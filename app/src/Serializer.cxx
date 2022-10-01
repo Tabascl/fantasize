@@ -32,7 +32,7 @@ void Serializer::SerializeFans(vector<shared_ptr<Fan>> fans) {
 
 vector<shared_ptr<Fan>>
 Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
-  vector<shared_ptr<Fan>> mapping;
+  vector<shared_ptr<Fan>> fans;
 
   // Create a for the sensors first, then searching becomes cheaper
   map<string, shared_ptr<Sensor>> sensorMap;
@@ -49,12 +49,16 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
       int minPWM = el.value()["MinPWM"];
       string label = el.value()["Label"];
 
-      mapping.push_back(make_shared<HwmonFan>(pwmControl, rpmSensor));
+      auto fan = make_shared<HwmonFan>(pwmControl, rpmSensor);
+      fan->MinPWM(minPWM);
+      fan->Label(label);
+
+      fans.push_back(fan);
     }
   } catch (const std::exception &e) {
     std::cout << "Deserialization error! Message: " << e.what() << std::endl;
   }
-  return mapping;
+  return fans;
 }
 
 void Serializer::WriteJson(json o) {
@@ -100,15 +104,17 @@ vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
     vector<shared_ptr<Fan>> fans;
 
     for (auto &step : el.value()["FanSteps"].items()) {
-      FanStep fanStep{step.value()[0], step.value()[1]};
+      steps.push_back(FanStep{step.value()[0], step.value()[1]});
     }
 
     for (auto &sensor : el.value()["Sensors"].items()) {
-      sensors.push_back(sensorMap[sensor.value()]);
+      if (sensorMap.contains(sensor.value()))
+        sensors.push_back(sensorMap[sensor.value()]);
     }
 
     for (auto &fan : el.value()["Fans"].items()) {
-      fans.push_back(fanMap[fan.value()]);
+      if (fanMap.contains(fan.value()))
+        fans.push_back(fanMap[fan.value()]);
     }
 
     curves.push_back(make_shared<FanCurve>(steps, sensors, fans));

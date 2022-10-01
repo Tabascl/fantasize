@@ -19,7 +19,7 @@ int NvidiaSensor::value() {
   return static_cast<int>(temp);
 }
 
-const std::string NvidiaSensor::toString() const { return "Nvidia GPU"; }
+const std::string NvidiaSensor::toString() const { return "NvidiaGPU"; }
 
 json NvidiaSensor::toJson() const {
   json obj = {"NvidiaSensor", toString()};

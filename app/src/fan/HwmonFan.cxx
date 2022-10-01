@@ -70,6 +70,9 @@ json HwmonFan::toJson() const {
 }
 
 const string HwmonFan::toString() const {
-  return "Fan!\nPWMControl: " + mPWMControl->toString() +
-         "\nRpmSensor: " + mRpmSensor->toString();
+  if (!mLabel.empty()) {
+    return mLabel;
+  } else {
+    return "fan:" + mPWMControl->toString();
+  }
 }

@@ -22,6 +22,7 @@ public:
 
 private:
   int AggregateTemperature();
+  void PrintInfo();
 
   std::vector<FanStep> mSteps;
   std::vector<std::shared_ptr<Sensor>> mTempSensors;

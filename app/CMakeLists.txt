@@ -22,6 +22,8 @@ add_executable(app
   src/FanGenerator.cxx
   src/Serializer.cxx
   src/sensor/SensorManager.cxx
+  src/Controller.cxx
+  src/App.cxx
 )
 
 set_property(TARGET app PROPERTY CXX_STANDARD 20)

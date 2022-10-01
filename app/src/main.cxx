@@ -1,40 +1,22 @@
-#include <execution>
+#include <csignal>
 #include <iostream>
 
-#include <FanGenerator.h>
-#include <Serializer.h>
-#include <fan/Fan.h>
-#include <fan/FanLabeler.h>
-#include <memory>
-#include <pstl/glue_execution_defs.h>
-#include <pwm/PWMControlFacade.h>
-#include <sensor/SensorManager.h>
+#include <App.h>
+
+App app;
+
+void signal_handler(int s) { app.Shutdown(); }
 
 int main() {
-  SensorManager sensorManager;
-  auto pwmSensors = sensorManager.RPMSensors();
-  auto tempSensors = sensorManager.TemperatureSensors();
+  signal(SIGINT, signal_handler);
 
-  PWMControlFacade pwmControlFacade;
-  auto controls = pwmControlFacade.PWMControls();
+  try {
+    app.Init();
+    app.NormalOperation();
+  } catch (const std::exception &e) {
+    std::cout << "An exception was caught: " << e.what() << std::endl;
+  }
 
-  FanGenerator m;
-  Serializer s;
-
-  std::vector<std::shared_ptr<Fan>> fans;
-
-  // fans = m.FindFans(pwmSensors, controls);
-  // s.SerializeFans(fans);
-  fans = s.DeserializeFans(pwmSensors);
-
-  std::for_each(std::execution::par, std::begin(fans), std::end(fans),
-                [](auto &&f) { f->FindMinPWM(); });
-
-  // auto curves = s.DeserializeFanCurves(tempSensors, fans);
-  FanLabeler labeler;
-  labeler.RunFanLabelInteraction(fans);
-
-  s.SerializeFans(fans);
-
+  app.Shutdown();
   return 0;
 }
