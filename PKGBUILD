@@ -3,12 +3,11 @@ pkgver=0.1.0
 pkgrel=1
 pkgdesc='C++ fan control for Linux'
 url='https://github.com/Tabascl/fantasize.git'
-source=("$pkgname-$pkgver.tar.gz::https://github.com/Tabascl/fantasize/archive/v$pkgver.tar.gz")
-backup=("etc/fantasize/fans.json")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/Tabascl/fantasize/archive/refs/tags/v$pkgver.tar.gz")
 arch=('x86_64')
 license=('GPL3')
 makedepends=('git' 'cmake' 'nlohmann-json' 'boost' 'cuda')
-sha256sums=('ce998dabe4e88ee6b6a4ab99ad7afbf90fad98f47972fac658e26cc95a17d061')
+sha256sums=('417705e0214c1f39dd8c9f06e97b6f1478c5808a2defe1fa0f1c6550bd15d6c5')
 
 build() {
     cmake -S "$pkgname-$pkgver/app" -B build -DCMAKE_BUILD_TYPE=Release
@@ -16,5 +15,5 @@ build() {
 }
 
 package() {
-    DESTDIR="$pkgdir" cmake --install build
+    cmake --install build --prefix "$pkgdir/" --verbose
 }
