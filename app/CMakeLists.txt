@@ -31,4 +31,4 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 target_include_directories(${PROJECT_NAME} PUBLIC include /opt/cuda)
 target_link_libraries(${PROJECT_NAME} PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json tbb ${Boost_LIBRARIES})
 
-install(TARGETS ${PROJECT_NAME} DESTINATION /usr/local/bin)
+install(TARGETS ${PROJECT_NAME} DESTINATION usr/local/bin)
