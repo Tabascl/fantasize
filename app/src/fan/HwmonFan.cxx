@@ -35,6 +35,7 @@ void HwmonFan::MinPWM(int value) { mMinPWM = value; }
 void HwmonFan::StartPWM(int value) { mStartPWM = value; }
 
 void HwmonFan::FindMinPWM() {
+  cout << "Looking for minimal PWM" << endl;
   int minPWM = 0;
   mMinPWM = 0;
 

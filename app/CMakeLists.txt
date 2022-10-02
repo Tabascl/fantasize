@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(fantasize)
+project(fantasize VERSION 0.1.0)
 
-set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(nlohmann_json 3.11.2 REQUIRED)
+find_package(Boost 1.80 COMPONENTS program_options REQUIRED)
 
-add_executable(app
+add_executable(${PROJECT_NAME}
   src/main.cxx
   src/sensor/LMSensorsFacade.cxx
   src/sensor/GPUSensorsFacade.cxx
@@ -26,7 +26,9 @@ add_executable(app
   src/App.cxx
 )
 
-set_property(TARGET app PROPERTY CXX_STANDARD 20)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
-target_include_directories(app PUBLIC include /opt/cuda)
-target_link_libraries(app PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json tbb)
+target_include_directories(${PROJECT_NAME} PUBLIC include /opt/cuda)
+target_link_libraries(${PROJECT_NAME} PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json tbb ${Boost_LIBRARIES})
+
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)

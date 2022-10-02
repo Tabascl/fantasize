@@ -56,11 +56,6 @@ FanGenerator::FindFans(vector<shared_ptr<Sensor>> rpmSensors,
     c->pwm(100);
   }
 
-  cout << "Resetting all fans" << endl;
-  for (auto c : pwmControls) {
-    c->Reset();
-  }
-
   return mapping;
 }
 
