@@ -7,7 +7,7 @@ source=("$pkgname-$pkgver.tar.gz::https://github.com/Tabascl/fantasize/archive/r
 arch=('x86_64')
 license=('GPL3')
 makedepends=('git' 'cmake' 'nlohmann-json' 'boost' 'cuda')
-sha256sums=('417705e0214c1f39dd8c9f06e97b6f1478c5808a2defe1fa0f1c6550bd15d6c5')
+sha256sums=('e3bb758e96b816b417212eeeb20eaebebbc6dc976276ca5d70074e4df64aaa95')
 
 build() {
     cmake -S "$pkgname-$pkgver/app" -B build -DCMAKE_BUILD_TYPE=Release
