@@ -32,3 +32,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC include /opt/cuda)
 target_link_libraries(${PROJECT_NAME} PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json tbb ${Boost_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION usr/local/bin)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/unit/fantasize.service DESTINATION usr/lib/systemd/system)

@@ -14,7 +14,6 @@ FanCurve::FanCurve(std::vector<FanStep> steps,
 
 void FanCurve::DoFanControl() {
   int temp = AggregateTemperature();
-  cout << "Temp: " << temp << "C" << endl;
 
   int t0, t1, p0, p1;
   int targetFanSpeed;
@@ -36,8 +35,6 @@ void FanCurve::DoFanControl() {
 
     targetFanSpeed = p0 + ((p1 - p0) / (t1 - t0)) * (temp - t0);
   }
-
-  cout << "Power: " << targetFanSpeed << "%" << endl;
 
   for (auto f : mFans) {
     f->PWM(targetFanSpeed);

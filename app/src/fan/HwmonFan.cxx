@@ -14,7 +14,6 @@ using namespace std;
 HwmonFan::HwmonFan(std::shared_ptr<PWMControl> pwmControl,
                    std::shared_ptr<Sensor> rpmSensor)
     : mPWMControl(pwmControl), mRpmSensor(rpmSensor) {
-  cout << "Enabling manual control" << endl;
   mPWMControl->EnableManualControl();
 }
 
