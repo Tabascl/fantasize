@@ -19,9 +19,9 @@ HwmonFan::HwmonFan(std::shared_ptr<PWMControl> pwmControl,
 
 void HwmonFan::PWM(int percent) {
   if (percent < mMinPWM) {
-    mPWMControl->pwm(mMinPWM);
+    mPWMControl->Power(mMinPWM);
   } else {
-    mPWMControl->pwm(percent);
+    mPWMControl->Power(percent);
   }
 }
 

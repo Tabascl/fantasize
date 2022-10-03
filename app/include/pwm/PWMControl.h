@@ -16,8 +16,8 @@ public:
   PWMControl(std::string controlPath);
   ~PWMControl();
 
-  void pwm(int percent);
-  int pwm();
+  void Power(int percent);
+  int Power();
 
   void EnableManualControl();
   void Reset();
@@ -27,7 +27,7 @@ public:
   json toJson() const override;
 
 private:
-  int readValue(std::string path);
+  int mCurrentValue;
 
   std::string mControlPath;
   std::string mEnablePath;

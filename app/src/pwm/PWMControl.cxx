@@ -1,7 +1,9 @@
-#include <boost/json/object.hpp>
+#include <boost/log/attributes/named_scope.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+
+#include <boost/log/trivial.hpp>
 
 #include <pwm/PWMControl.h>
 
@@ -22,6 +24,8 @@ PWMControl::PWMControl(string controlPath) : mControlPath(controlPath) {
 
   ifstream istrm;
 
+  mCurrentValue = Power();
+
   istrm.open(mEnablePath);
   istrm >> mInitialEnable;
   istrm.close();
@@ -36,22 +40,31 @@ PWMControl::~PWMControl() {
   Reset();
 }
 
-void PWMControl::pwm(int percent) {
-  int pwmValue = PWM_MAX_VALUE * percent / 100;
+void PWMControl::Power(int percent) {
+  BOOST_LOG_FUNCTION();
 
-  ofstream ostrm(mControlPath, ios::trunc);
-  ostrm << pwmValue;
-  ostrm.close();
+  int pwmValue = PWM_MAX_VALUE * (percent / 100);
+
+  if (percent != mCurrentValue) {
+    BOOST_LOG_TRIVIAL(trace) << "Updating control value to " << percent;
+    ofstream ostrm(mControlPath, ios::trunc);
+    ostrm << pwmValue;
+    ostrm.close();
+
+    mCurrentValue = percent;
+  } else {
+    BOOST_LOG_TRIVIAL(trace) << "Value unchanged, do nothing";
+  }
 }
 
-int PWMControl::pwm() {
+int PWMControl::Power() {
   int value;
   ifstream istrm;
 
   istrm.open(mControlPath);
   istrm >> value;
 
-  return value;
+  return (value / PWM_MAX_VALUE) * 100;
 }
 
 void PWMControl::EnableManualControl() {
