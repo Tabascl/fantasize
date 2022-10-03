@@ -1,5 +1,5 @@
 pkgname=fantasize
-pkgver=0.1.1
+pkgver=0.1.2
 pkgrel=1
 pkgdesc='C++ fan control for Linux'
 url='https://github.com/Tabascl/fantasize.git'
