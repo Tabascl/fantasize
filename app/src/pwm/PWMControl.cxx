@@ -36,7 +36,7 @@ PWMControl::PWMControl(string controlPath) : mControlPath(controlPath) {
 }
 
 PWMControl::~PWMControl() {
-  cout << "Cleanup" << endl;
+  BOOST_LOG_TRIVIAL(trace) << "Cleanup";
   Reset();
 }
 

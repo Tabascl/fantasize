@@ -1,4 +1,7 @@
+#include <boost/log/attributes/named_scope.hpp>
 #include <iostream>
+
+#include <boost/log/trivial.hpp>
 
 #include <fan/FanCurve.h>
 
@@ -8,7 +11,6 @@ FanCurve::FanCurve(std::vector<FanStep> steps,
                    std::vector<std::shared_ptr<Sensor>> sensors,
                    std::vector<std::shared_ptr<Fan>> fans)
     : mSteps(steps), mTempSensors(sensors), mFans(fans) {
-  cout << "Initialized Fan Curve:" << endl;
   PrintInfo();
 }
 
@@ -52,28 +54,32 @@ int FanCurve::AggregateTemperature() {
 }
 
 void FanCurve::PrintInfo() {
+  BOOST_LOG_FUNCTION()
+
+  BOOST_LOG_TRIVIAL(info) << "### Fan curve:";
+
   stringstream sStream;
-  cout << "Steps: ";
+  sStream << "Steps: ";
   for (auto s : mSteps) {
     sStream << "[ " << s.Temp << "C, " << s.Percent << "% ] ";
   }
-  cout << sStream.str() << endl;
+  BOOST_LOG_TRIVIAL(info) << sStream.str();
 
   sStream.str(string());
 
-  cout << "Sensors: ";
+  sStream << "Sensors: ";
   for (auto s : mTempSensors) {
     sStream << s->toString() << ", ";
   }
 
-  cout << sStream.str() << endl;
+  BOOST_LOG_TRIVIAL(info) << sStream.str();
 
   sStream.str(string());
 
-  cout << "Fans: ";
+  sStream << "Fans: ";
   for (auto s : mFans) {
     sStream << s->toString() << ", ";
   }
 
-  cout << sStream.str() << endl;
+  BOOST_LOG_TRIVIAL(info) << sStream.str();
 }
