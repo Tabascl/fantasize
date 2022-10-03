@@ -47,10 +47,12 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
       auto rpmSensor = sensorMap[el.value()["LMSensor"]];
 
       int minPWM = el.value()["MinPWM"];
+      int startPWM = el.value()["StartPWM"];
       string label = el.value()["Label"];
 
       auto fan = make_shared<HwmonFan>(pwmControl, rpmSensor);
       fan->MinPWM(minPWM);
+      fan->StartPWM(startPWM);
       fan->Label(label);
 
       fans.push_back(fan);

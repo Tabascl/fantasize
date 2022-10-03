@@ -36,6 +36,8 @@ PWMControl::PWMControl(string controlPath) : mControlPath(controlPath) {
 }
 
 PWMControl::~PWMControl() {
+  BOOST_LOG_FUNCTION();
+
   BOOST_LOG_TRIVIAL(trace) << "Cleanup";
   Reset();
 }
@@ -43,17 +45,16 @@ PWMControl::~PWMControl() {
 void PWMControl::Power(int percent) {
   BOOST_LOG_FUNCTION();
 
-  int pwmValue = PWM_MAX_VALUE * (percent / 100);
+  int pwmValue = (PWM_MAX_VALUE * percent) / 100;
 
   if (percent != mCurrentValue) {
-    BOOST_LOG_TRIVIAL(trace) << "Updating control value to " << percent;
+    BOOST_LOG_TRIVIAL(trace)
+        << "Updating control value to " << percent << "% (" << pwmValue << ")";
     ofstream ostrm(mControlPath, ios::trunc);
     ostrm << pwmValue;
     ostrm.close();
 
     mCurrentValue = percent;
-  } else {
-    BOOST_LOG_TRIVIAL(trace) << "Value unchanged, do nothing";
   }
 }
 
@@ -64,7 +65,7 @@ int PWMControl::Power() {
   istrm.open(mControlPath);
   istrm >> value;
 
-  return (value / PWM_MAX_VALUE) * 100;
+  return (value * 100) / PWM_MAX_VALUE;
 }
 
 void PWMControl::EnableManualControl() {

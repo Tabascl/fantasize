@@ -17,11 +17,14 @@ public:
   int RPM() override;
 
   void Label(std::string label) override;
-  void MinPWM(int value) override;
-  void StartPWM(int value) override;
 
-  void FindMinPWM() override;
-  void FindStartPWM() override;
+  void MinPWM(int value) override;
+  int MinPWM() override;
+
+  void StartPWM(int value) override;
+  int StartPWM() override;
+
+  void FindPWMLimits() override;
 
   json toJson() const override;
 

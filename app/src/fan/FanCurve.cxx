@@ -15,15 +15,16 @@ FanCurve::FanCurve(std::vector<FanStep> steps,
 }
 
 void FanCurve::DoFanControl() {
+  BOOST_LOG_FUNCTION();
   int temp = AggregateTemperature();
 
   int t0, t1, p0, p1;
-  int targetFanSpeed;
+  int targetFanPower;
 
   if (temp <= mSteps[0].Temp) {
-    targetFanSpeed = mSteps[0].Percent;
+    targetFanPower = mSteps[0].Percent;
   } else if (temp > mSteps[mSteps.size() - 1].Temp) {
-    targetFanSpeed = mSteps[mSteps.size() - 1].Percent;
+    targetFanPower = mSteps[mSteps.size() - 1].Percent;
   } else {
     for (int i = 0; i < mSteps.size(); i++) {
       if (temp > mSteps[i].Temp) {
@@ -35,11 +36,15 @@ void FanCurve::DoFanControl() {
       }
     }
 
-    targetFanSpeed = p0 + ((p1 - p0) / (t1 - t0)) * (temp - t0);
+    targetFanPower = p0 + ((p1 - p0) / (t1 - t0)) * (temp - t0);
   }
 
   for (auto f : mFans) {
-    f->PWM(targetFanSpeed);
+    if (f->RPM() <= 0) {
+      BOOST_LOG_TRIVIAL(warning) << "Fan stopped completely!";
+      f->PWM(f->StartPWM());
+    }
+    f->PWM(targetFanPower);
   }
 }
 

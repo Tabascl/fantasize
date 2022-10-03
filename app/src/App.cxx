@@ -18,7 +18,7 @@ void App::InitialSetup() {
                                      mPWMControlFacade.PWMControls());
 
   std::for_each(std::execution::par, std::begin(fans), std::end(fans),
-                [](auto &&fan) { fan->FindMinPWM(); });
+                [](auto &&fan) { fan->FindPWMLimits(); });
 
   mFanLabeler.RunFanLabelInteraction(fans);
 

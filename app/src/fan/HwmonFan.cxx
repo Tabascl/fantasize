@@ -7,7 +7,7 @@
 #include <boost/json/object.hpp>
 #include <fan/HwmonFan.h>
 
-#define TIMEOUT 5
+#define TIMEOUT 10
 
 using namespace std;
 
@@ -31,12 +31,17 @@ void HwmonFan::Label(std::string label) { mLabel = label; }
 
 void HwmonFan::MinPWM(int value) { mMinPWM = value; }
 
+int HwmonFan::MinPWM() { return mMinPWM; }
+
+int HwmonFan::StartPWM() { return mStartPWM; }
+
 void HwmonFan::StartPWM(int value) { mStartPWM = value; }
 
-void HwmonFan::FindMinPWM() {
+void HwmonFan::FindPWMLimits() {
   cout << "Looking for minimal PWM" << endl;
   int minPWM = 0;
   mMinPWM = 0;
+  mStartPWM = 0;
 
   for (int curPWM = 100; curPWM > 0; curPWM -= 5) {
     PWM(curPWM);
@@ -50,22 +55,39 @@ void HwmonFan::FindMinPWM() {
     }
   }
 
+  cout << "Setting minimal PWM: " << minPWM << endl;
+  mMinPWM = minPWM;
+
   if (minPWM == 0) {
     cout << "Fan never stopped. ";
+  } else {
+    int startPWM = 0;
+
+    cout << "Looking for start PWM!" << endl;
+    for (int curPWM = minPWM - 5; curPWM < 100; curPWM += 5) {
+      PWM(curPWM);
+      this_thread::sleep_for(chrono::seconds(TIMEOUT));
+
+      int curRPM = RPM();
+
+      if (curRPM > 0) {
+        cout << "Setting start PWM: " << startPWM << endl;
+        startPWM = curPWM;
+        break;
+      }
+    }
+
+    mStartPWM = startPWM;
   }
-  cout << "Setting minimal PWM: " << minPWM << endl;
-
-  mMinPWM = minPWM;
 }
-
-void HwmonFan::FindStartPWM() {}
 
 json HwmonFan::toJson() const {
   json obj;
   obj = {mPWMControl->toJson(),
          mRpmSensor->toJson(),
          {"Label", mLabel},
-         {"MinPWM", mMinPWM}};
+         {"MinPWM", mMinPWM},
+         {"StartPWM", mStartPWM}};
   return obj;
 }
 
