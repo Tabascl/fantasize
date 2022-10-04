@@ -16,6 +16,7 @@ FanCurve::FanCurve(std::vector<FanStep> steps,
 
 void FanCurve::DoFanControl() {
   BOOST_LOG_FUNCTION();
+
   int temp = AggregateTemperature();
 
   int t0, t1, p0, p1;
@@ -43,8 +44,12 @@ void FanCurve::DoFanControl() {
     if (f->RPM() <= 0) {
       BOOST_LOG_TRIVIAL(warning) << "Fan stopped completely!";
       f->PWM(f->StartPWM());
+
+      BOOST_LOG_TRIVIAL(info) << "Adjusting minPWM of fan " << f->toString();
+      f->MinPWM(f->MinPWM() + 2);
+    } else {
+      f->PWM(targetFanPower);
     }
-    f->PWM(targetFanPower);
   }
 }
 

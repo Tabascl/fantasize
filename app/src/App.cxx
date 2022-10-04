@@ -5,10 +5,10 @@
 using namespace std;
 
 void App::Init() {
-  auto fans = mSerializer.DeserializeFans(mSensorManager.RPMSensors());
+  mFans = mSerializer.DeserializeFans(mSensorManager.RPMSensors());
 
   auto fanCurves = mSerializer.DeserializeFanCurves(
-      mSensorManager.TemperatureSensors(), fans);
+      mSensorManager.TemperatureSensors(), mFans);
 
   mController = make_unique<Controller>(fanCurves);
 }
@@ -23,6 +23,8 @@ void App::InitialSetup() {
   mFanLabeler.RunFanLabelInteraction(fans);
 
   mSerializer.SerializeFans(fans);
+
+  mFans = fans;
 }
 
 void App::NormalOperation() {
@@ -30,4 +32,7 @@ void App::NormalOperation() {
     mController->StartFanControlLoop();
 }
 
-void App::Shutdown() { mController.reset(); }
+void App::Shutdown() {
+  mController.reset();
+  mSerializer.SerializeFans(mFans);
+}

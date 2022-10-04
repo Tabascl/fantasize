@@ -27,6 +27,8 @@ private:
   FanGenerator mFanGenerator;
 
   std::unique_ptr<Controller> mController;
+
+  std::vector<std::shared_ptr<Fan>> mFans;
 };
 
 #endif // APP_H_

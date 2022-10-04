@@ -47,9 +47,7 @@ void HwmonFan::FindPWMLimits() {
     PWM(curPWM);
     this_thread::sleep_for(chrono::seconds(TIMEOUT));
 
-    int curRPM = RPM();
-
-    if (curRPM <= 0) {
+    if (RPM() <= 0) {
       minPWM = curPWM + 5;
       break;
     }
@@ -68,9 +66,7 @@ void HwmonFan::FindPWMLimits() {
       PWM(curPWM);
       this_thread::sleep_for(chrono::seconds(TIMEOUT));
 
-      int curRPM = RPM();
-
-      if (curRPM > 0) {
+      if (RPM() > 0) {
         cout << "Setting start PWM: " << startPWM << endl;
         startPWM = curPWM;
         break;
