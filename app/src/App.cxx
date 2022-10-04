@@ -33,6 +33,7 @@ void App::NormalOperation() {
 }
 
 void App::Shutdown() {
-  mController.reset();
   mSerializer.SerializeFans(mFans);
+  mFans.clear();
+  mController.reset();
 }
