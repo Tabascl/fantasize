@@ -8,6 +8,7 @@
 #include <fan/HwmonFan.h>
 
 #define TIMEOUT 10
+#define STEP 2
 
 using namespace std;
 
@@ -43,12 +44,12 @@ void HwmonFan::FindPWMLimits() {
   mMinPWM = 0;
   mStartPWM = 0;
 
-  for (int curPWM = 100; curPWM > 0; curPWM -= 5) {
+  for (int curPWM = 100; curPWM > 0; curPWM -= STEP) {
     PWM(curPWM);
     this_thread::sleep_for(chrono::seconds(TIMEOUT));
 
     if (RPM() <= 0) {
-      minPWM = curPWM + 5;
+      minPWM = curPWM + STEP;
       break;
     }
   }
@@ -62,7 +63,7 @@ void HwmonFan::FindPWMLimits() {
     int startPWM = 0;
 
     cout << "Looking for start PWM!" << endl;
-    for (int curPWM = minPWM - 5; curPWM < 100; curPWM += 5) {
+    for (int curPWM = minPWM - STEP; curPWM < 100; curPWM += STEP) {
       PWM(curPWM);
       this_thread::sleep_for(chrono::seconds(TIMEOUT));
 

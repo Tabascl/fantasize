@@ -1,4 +1,3 @@
-#include <boost/log/expressions/formatters/named_scope.hpp>
 #include <csignal>
 #include <iostream>
 
@@ -6,6 +5,7 @@
 #include <boost/log/attributes/named_scope.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
+#include <boost/log/expressions/formatters/named_scope.hpp>
 #include <boost/log/expressions/message.hpp>
 #include <boost/log/support/date_time.hpp>
 #include <boost/log/trivial.hpp>
@@ -60,6 +60,7 @@ void InitLogging(bool verbose) {
 
 int main(int argc, char **argv) {
   signal(SIGINT, signal_handler);
+  signal(SIGTERM, signal_handler);
 
   po::options_description desc("Allowed options");
   desc.add_options()("help,h", "produce help message")(
