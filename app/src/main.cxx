@@ -20,6 +20,8 @@
 
 #include <App.h>
 
+#define PROJECT_VERSION "v0.1.5"
+
 namespace po = boost::program_options;
 namespace logging = boost::log;
 
@@ -59,6 +61,9 @@ void InitLogging(bool verbose) {
 }
 
 int main(int argc, char **argv) {
+  BOOST_LOG_FUNCTION()
+  BOOST_LOG_TRIVIAL(info) << "Version: " << PROJECT_VERSION;
+
   signal(SIGINT, signal_handler);
   signal(SIGTERM, signal_handler);
 
