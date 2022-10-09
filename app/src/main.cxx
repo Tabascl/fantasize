@@ -20,7 +20,7 @@
 
 #include <App.h>
 
-#define PROJECT_VERSION "v0.1.5"
+#define PROJECT_VERSION "v0.1.6"
 
 namespace po = boost::program_options;
 namespace logging = boost::log;

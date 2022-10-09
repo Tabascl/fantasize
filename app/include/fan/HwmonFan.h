@@ -1,8 +1,10 @@
 #ifndef HWMONFAN_H_
 #define HWMONFAN_H_
 
-#include <boost/json/object.hpp>
+#include <chrono>
 #include <memory>
+
+#include <boost/json/object.hpp>
 
 #include <fan/Fan.h>
 #include <pwm/PWMControl.h>
@@ -25,6 +27,7 @@ public:
   int StartPWM() override;
 
   void FindPWMLimits() override;
+  void AdjustPWMLimits() override;
 
   json toJson() const override;
 
@@ -37,6 +40,7 @@ private:
 
   int mMinPWM;
   int mStartPWM;
+  std::chrono::time_point<std::chrono::steady_clock> mLastAdjustmentTime;
 };
 
 #endif // HWMONFAN_H_

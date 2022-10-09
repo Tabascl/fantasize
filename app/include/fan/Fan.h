@@ -18,6 +18,7 @@ public:
   virtual int StartPWM() = 0;
 
   virtual void FindPWMLimits() = 0;
+  virtual void AdjustPWMLimits() = 0;
 };
 
 #endif // FAN_H_

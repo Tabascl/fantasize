@@ -1,11 +1,12 @@
-#include <chrono>
 #include <iostream>
 #include <ostream>
 #include <thread>
 
-#include "pwm/PWMControl.h"
-#include <boost/json/object.hpp>
+#include <boost/log/attributes/named_scope.hpp>
+#include <boost/log/trivial.hpp>
+
 #include <fan/HwmonFan.h>
+#include <pwm/PWMControl.h>
 
 #define TIMEOUT 10
 #define STEP 2
@@ -34,9 +35,9 @@ void HwmonFan::MinPWM(int value) { mMinPWM = value; }
 
 int HwmonFan::MinPWM() { return mMinPWM; }
 
-int HwmonFan::StartPWM() { return mStartPWM; }
-
 void HwmonFan::StartPWM(int value) { mStartPWM = value; }
+
+int HwmonFan::StartPWM() { return mStartPWM; }
 
 void HwmonFan::FindPWMLimits() {
   cout << "Looking for minimal PWM" << endl;
@@ -75,6 +76,20 @@ void HwmonFan::FindPWMLimits() {
     }
 
     mStartPWM = startPWM;
+  }
+}
+
+void HwmonFan::AdjustPWMLimits() {
+  BOOST_LOG_FUNCTION()
+
+  chrono::time_point now = chrono::steady_clock::now();
+
+  if ((now - mLastAdjustmentTime) >
+      chrono::duration(chrono::seconds(TIMEOUT))) {
+    BOOST_LOG_TRIVIAL(info) << "Increasing minimal fan speed";
+
+    mLastAdjustmentTime = now;
+    mMinPWM += 2;
   }
 }
 
