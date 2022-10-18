@@ -3,6 +3,6 @@ compile_commands.json
 .cache/
 pkg/
 rel_oot/
-src/
+./src
 *.pkg.tar.zst
 *.tar.gz

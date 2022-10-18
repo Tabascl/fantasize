@@ -5,11 +5,13 @@
 #include <thread>
 #include <vector>
 
+#include <Settings.h>
 #include <fan/FanCurve.h>
 
 class Controller {
 public:
-  Controller(std::vector<std::shared_ptr<FanCurve>> curves);
+  Controller(std::shared_ptr<Settings> settings,
+             std::vector<std::shared_ptr<FanCurve>> curves);
   ~Controller();
 
   void StartFanControlLoop();
@@ -17,6 +19,8 @@ public:
 
 private:
   void Loop();
+
+  int mTimeout;
 
   std::vector<std::shared_ptr<FanCurve>> mFanCurves;
   std::atomic<bool> mRun;

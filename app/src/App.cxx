@@ -10,7 +10,9 @@ void App::Init() {
   auto fanCurves = mSerializer.DeserializeFanCurves(
       mSensorManager.TemperatureSensors(), mFans);
 
-  mController = make_unique<Controller>(fanCurves);
+  mSettings = mSerializer.DeserializeSettings();
+
+  mController = make_unique<Controller>(mSettings, fanCurves);
 }
 
 void App::InitialSetup() {

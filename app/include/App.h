@@ -26,6 +26,8 @@ private:
   FanLabeler mFanLabeler;
   FanGenerator mFanGenerator;
 
+  std::shared_ptr<Settings> mSettings;
+
   std::unique_ptr<Controller> mController;
 
   std::vector<std::shared_ptr<Fan>> mFans;

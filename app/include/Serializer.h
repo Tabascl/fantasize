@@ -1,12 +1,12 @@
 #ifndef SERIALIZER_H_
 #define SERIALIZER_H_
 
-#include "fan/HwmonFan.h"
 #include <memory>
 #include <vector>
 
 #include <nlohmann/json.hpp>
 
+#include <Settings.h>
 #include <fan/Fan.h>
 #include <fan/FanCurve.h>
 #include <sensor/Sensor.h>
@@ -25,6 +25,7 @@ public:
   std::vector<std::shared_ptr<FanCurve>>
   DeserializeFanCurves(std::vector<std::shared_ptr<Sensor>> availableSensors,
                        std::vector<std::shared_ptr<Fan>> availableFans);
+  std::shared_ptr<Settings> DeserializeSettings();
 
 private:
   void WriteJson(json o);

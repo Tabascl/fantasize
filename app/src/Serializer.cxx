@@ -1,5 +1,4 @@
-#include "fan/FanCurve.h"
-#include "sensor/Sensor.h"
+#include "Settings.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -123,4 +122,19 @@ vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
   }
 
   return curves;
+}
+
+shared_ptr<Settings> Serializer::DeserializeSettings() {
+  int frequency = FREQUENCY_DEFAULT;
+
+  auto data = ReadJson();
+
+  if (data.contains("settings")) {
+    auto items = data["settings"];
+
+    if (items.contains("frequency"))
+      frequency = items["frequency"];
+  }
+
+  return make_shared<Settings>(frequency);
 }

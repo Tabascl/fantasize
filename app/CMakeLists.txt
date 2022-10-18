@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(fantasize VERSION 0.1.6)
+project(fantasize VERSION 0.1.7)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -23,6 +23,7 @@ add_executable(${PROJECT_NAME}
   src/Serializer.cxx
   src/sensor/SensorManager.cxx
   src/Controller.cxx
+  src/Settings.cxx
   src/App.cxx
 )
 

@@ -6,10 +6,10 @@
 
 using namespace std;
 
-#define TIMEOUT 500
-
-Controller::Controller(vector<shared_ptr<FanCurve>> curves)
-    : mFanCurves(curves), mRun(false) {}
+Controller::Controller(shared_ptr<Settings> settings,
+                       vector<shared_ptr<FanCurve>> curves)
+    : mTimeout((1 / settings->Frequency()) * 1000), mFanCurves(curves),
+      mRun(false) {}
 
 Controller::~Controller() { StopFanControlLoop(); }
 
@@ -32,6 +32,6 @@ void Controller::Loop() {
       c->DoFanControl();
     }
 
-    this_thread::sleep_for(chrono::milliseconds(TIMEOUT));
+    this_thread::sleep_for(chrono::milliseconds(mTimeout));
   }
 }
