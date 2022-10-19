@@ -1,7 +1,9 @@
-#include <boost/json/object.hpp>
-#include <include/nvml.h>
+#ifdef HAVE_NVML
 
+#include <include/nvml.h>
 #include <sensor/NvidiaSensor.h>
+
+#include <boost/json/object.hpp>
 
 using namespace std;
 
@@ -25,3 +27,5 @@ json NvidiaSensor::toJson() const {
   json obj = {"NvidiaSensor", toString()};
   return obj;
 }
+
+#endif

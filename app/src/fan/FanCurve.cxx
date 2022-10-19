@@ -1,9 +1,8 @@
-#include <boost/log/attributes/named_scope.hpp>
-#include <iostream>
-
-#include <boost/log/trivial.hpp>
-
 #include <fan/FanCurve.h>
+
+#include <boost/log/attributes/named_scope.hpp>
+#include <boost/log/trivial.hpp>
+#include <sstream>
 
 using namespace std;
 
