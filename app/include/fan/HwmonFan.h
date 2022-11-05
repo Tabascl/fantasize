@@ -4,8 +4,6 @@
 #include <chrono>
 #include <memory>
 
-#include <boost/json/object.hpp>
-
 #include <fan/Fan.h>
 #include <pwm/PWMControl.h>
 #include <sensor/Sensor.h>
