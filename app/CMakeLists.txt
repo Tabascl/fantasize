@@ -5,7 +5,7 @@ project(fantasize VERSION 0.1.7)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(nlohmann_json 3.11.2 REQUIRED)
-find_package(Boost 1.80 COMPONENTS program_options log log_setup date_time REQUIRED)
+find_package(Boost 1.74 COMPONENTS program_options log log_setup date_time REQUIRED)
 
 add_executable(${PROJECT_NAME}
   src/main.cxx
