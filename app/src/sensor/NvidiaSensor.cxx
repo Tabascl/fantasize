@@ -1,4 +1,3 @@
-#include <boost/json/object.hpp>
 #include <include/nvml.h>
 
 #include <sensor/NvidiaSensor.h>
