@@ -1,7 +1,6 @@
 #ifndef PWMCONTROL_H_
 #define PWMCONTROL_H_
 
-#include <boost/json/object.hpp>
 #include <string>
 
 #include <Printable.h>
