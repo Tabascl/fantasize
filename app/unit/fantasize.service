@@ -7,4 +7,4 @@ ExecStart=/usr/local/bin/fantasize
 Restart=always
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical.target
