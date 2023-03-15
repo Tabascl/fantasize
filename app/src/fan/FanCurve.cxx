@@ -4,17 +4,25 @@
 #include <boost/log/trivial.hpp>
 
 #include <fan/FanCurve.h>
+#include <memory>
 
 using namespace std;
 
 FanCurve::FanCurve(std::vector<FanStep> steps,
                    std::vector<std::shared_ptr<Sensor>> sensors,
-                   std::vector<std::shared_ptr<Fan>> fans)
-    : mSteps(steps), mTempSensors(sensors), mFans(fans) {
+                   std::vector<std::shared_ptr<Fan>> fans,
+                   std::unique_ptr<Aggregator> aggregator)
+  : mSteps(steps)
+  , mTempSensors(sensors)
+  , mFans(fans)
+  , mAggregator(std::move(aggregator))
+{
   PrintInfo();
 }
 
-void FanCurve::DoFanControl() {
+void
+FanCurve::DoFanControl()
+{
   BOOST_LOG_FUNCTION();
 
   int temp = AggregateTemperature();
@@ -51,17 +59,15 @@ void FanCurve::DoFanControl() {
   }
 }
 
-// Dummy Implementation using AVG
-int FanCurve::AggregateTemperature() {
-  int sum = 0;
-  for (auto s : mTempSensors) {
-    sum += s->value();
-  }
-
-  return sum / mTempSensors.size();
+int
+FanCurve::AggregateTemperature()
+{
+  return mAggregator->aggregate(mTempSensors);
 }
 
-void FanCurve::PrintInfo() {
+void
+FanCurve::PrintInfo()
+{
   BOOST_LOG_FUNCTION()
 
   BOOST_LOG_TRIVIAL(info) << "### Fan curve:";
@@ -88,6 +94,12 @@ void FanCurve::PrintInfo() {
   for (auto s : mFans) {
     sStream << s->toString() << ", ";
   }
+
+  BOOST_LOG_TRIVIAL(info) << sStream.str();
+
+  sStream.str(string());
+
+  sStream << "Aggregate function: " << mAggregator->toString();
 
   BOOST_LOG_TRIVIAL(info) << sStream.str();
 }

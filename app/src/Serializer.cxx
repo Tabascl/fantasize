@@ -1,4 +1,3 @@
-#include "Settings.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -9,17 +8,21 @@
 #include <fan/HwmonFan.h>
 #include <pwm/PWMControl.h>
 #include <sensor/LMSensor.h>
+#include <string>
 
 using namespace std;
 namespace fs = filesystem;
 
-Serializer::Serializer() {
+Serializer::Serializer()
+{
   if (!fs::exists(SERIALIZATION_DIR)) {
     fs::create_directory(SERIALIZATION_DIR);
   }
 }
 
-void Serializer::SerializeFans(vector<shared_ptr<Fan>> fans) {
+void
+Serializer::SerializeFans(vector<shared_ptr<Fan>> fans)
+{
   json obj;
 
   for (auto f : fans) {
@@ -30,7 +33,8 @@ void Serializer::SerializeFans(vector<shared_ptr<Fan>> fans) {
 }
 
 vector<shared_ptr<Fan>>
-Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
+Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors)
+{
   vector<shared_ptr<Fan>> fans;
 
   // Create a for the sensors first, then searching becomes cheaper
@@ -41,7 +45,7 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
 
   auto data = ReadJson();
   try {
-    for (auto &el : data["fans"].items()) {
+    for (auto& el : data["fans"].items()) {
       auto pwmControl = make_shared<PWMControl>(el.value()["PWMControl"]);
       auto rpmSensor = sensorMap[el.value()["LMSensor"]];
 
@@ -56,20 +60,22 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
 
       fans.push_back(fan);
     }
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     std::cout << "Deserialization error! Message: " << e.what() << std::endl;
   }
   return fans;
 }
 
-void Serializer::WriteJson(json o) {
+void
+Serializer::WriteJson(json o)
+{
   json obj;
 
   if (fs::exists(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME)) {
     obj = ReadJson();
   }
 
-  for (auto &[key, value] : o.items()) {
+  for (auto& [key, value] : o.items()) {
     obj[key] = value;
   }
 
@@ -77,14 +83,18 @@ void Serializer::WriteJson(json o) {
   ostrm << obj.dump(2) << "\n";
 }
 
-json Serializer::ReadJson() {
+json
+Serializer::ReadJson()
+{
   ifstream istrm(fs::path(SERIALIZATION_DIR) / FANS_JSON_FILENAME);
   return json::parse(istrm);
 }
 
-vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
-    std::vector<std::shared_ptr<Sensor>> availableSensors,
-    std::vector<std::shared_ptr<Fan>> availableFans) {
+vector<shared_ptr<FanCurve>>
+Serializer::DeserializeFanCurves(
+  std::vector<std::shared_ptr<Sensor>> availableSensors,
+  std::vector<std::shared_ptr<Fan>> availableFans)
+{
   auto data = ReadJson();
 
   map<string, shared_ptr<Sensor>> sensorMap;
@@ -99,32 +109,47 @@ vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
 
   vector<shared_ptr<FanCurve>> curves;
 
-  for (auto &el : data["fancurves"].items()) {
+  for (auto& el : data["fancurves"].items()) {
     vector<FanStep> steps;
     vector<shared_ptr<Sensor>> sensors;
     vector<shared_ptr<Fan>> fans;
 
-    for (auto &step : el.value()["FanSteps"].items()) {
-      steps.push_back(FanStep{step.value()[0], step.value()[1]});
+    for (auto& step : el.value()["FanSteps"].items()) {
+      steps.push_back(FanStep{ step.value()[0], step.value()[1] });
     }
 
-    for (auto &sensor : el.value()["Sensors"].items()) {
+    for (auto& sensor : el.value()["Sensors"].items()) {
       if (sensorMap.contains(sensor.value()))
         sensors.push_back(sensorMap[sensor.value()]);
     }
 
-    for (auto &fan : el.value()["Fans"].items()) {
+    for (auto& fan : el.value()["Fans"].items()) {
       if (fanMap.contains(fan.value()))
         fans.push_back(fanMap[fan.value()]);
     }
 
-    curves.push_back(make_shared<FanCurve>(steps, sensors, fans));
+    std::unique_ptr<Aggregator> aggregator =
+      aggregatorFromString(el.value()["AggregateFunction"]);
+
+    curves.push_back(
+      make_shared<FanCurve>(steps, sensors, fans, std::move(aggregator)));
   }
 
   return curves;
 }
 
-shared_ptr<Settings> Serializer::DeserializeSettings() {
+std::unique_ptr<Aggregator>
+Serializer::aggregatorFromString(std::string str) const
+{
+  if (str == "max")
+    return std::make_unique<MaxAggregator>();
+  else
+    return std::make_unique<AverageAggregator>();
+}
+
+shared_ptr<Settings>
+Serializer::DeserializeSettings()
+{
   int frequency = FREQUENCY_DEFAULT;
 
   auto data = ReadJson();

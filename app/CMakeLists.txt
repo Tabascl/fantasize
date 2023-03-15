@@ -19,6 +19,7 @@ add_executable(${PROJECT_NAME}
   src/fan/HwmonFan.cxx
   src/fan/FanCurve.cxx
   src/fan/FanLabeler.cxx
+  src/fan/Aggregators.cxx
   src/FanGenerator.cxx
   src/Serializer.cxx
   src/sensor/SensorManager.cxx
