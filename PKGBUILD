@@ -6,14 +6,16 @@ url='https://github.com/Tabascl/fantasize.git'
 source=("$pkgname-$pkgver.tar.gz::https://github.com/Tabascl/fantasize/archive/refs/tags/v$pkgver.tar.gz")
 arch=('x86_64')
 license=('GPL3')
-makedepends=('git' 'cmake' 'nlohmann-json' 'boost')
+makedepends=('git' 'meson' 'nlohmann-json' 'boost')
 sha256sums=('SKIP')
 
 build() {
-    cmake -S "$pkgname-$pkgver/app" -B build -DCMAKE_BUILD_TYPE=Release
-    cmake --build build
+    meson setup build "$pkgname-$pkgver/app" -Dbuildtype=Release
+    cd build
+    meson compile
 }
 
 package() {
-    cmake --install build --prefix "$pkgdir/" --verbose
+    cd build
+    meson install
 }
