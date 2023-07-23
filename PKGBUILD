@@ -1,12 +1,12 @@
 pkgname=fantasize
-pkgver=0.1.9
+pkgver=0.2.0
 pkgrel=1
 pkgdesc='C++ fan control for Linux'
 url='https://github.com/Tabascl/fantasize.git'
 source=("$pkgname-$pkgver.tar.gz::https://github.com/Tabascl/fantasize/archive/refs/tags/v$pkgver.tar.gz")
 arch=('x86_64')
 license=('GPL3')
-makedepends=('git' 'cmake' 'nlohmann-json' 'boost' 'cuda')
+makedepends=('git' 'cmake' 'nlohmann-json' 'boost')
 sha256sums=('SKIP')
 
 build() {

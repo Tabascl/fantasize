@@ -20,7 +20,7 @@
 
 #include <App.h>
 
-#define PROJECT_VERSION "v0.1.9"
+#define PROJECT_VERSION "v0.2.0"
 
 namespace po = boost::program_options;
 namespace logging = boost::log;
@@ -29,32 +29,26 @@ App app;
 
 static int doInitialSetup = 0;
 
-void
-signal_handler(int s)
-{
-  app.Shutdown();
-}
+void signal_handler(int s) { app.Shutdown(); }
 
-void
-InitLogging(bool verbose)
-{
+void InitLogging(bool verbose) {
   logging::add_console_log(
-    std::clog,
-    logging::keywords::format =
-      (logging::expressions::stream
-       << "["
-       << logging::expressions::format_date_time<boost::posix_time::ptime>(
-            "TimeStamp", "%Y-%m-%d %H:%M:%S")
-       << "]["
-       << logging::expressions::format_named_scope(
-            "Scope", logging::keywords::format = "%c")
-       << "]"
-       << "[" << logging::trivial::severity << "] "
-       << logging::expressions::smessage));
+      std::clog,
+      logging::keywords::format =
+          (logging::expressions::stream
+           << "["
+           << logging::expressions::format_date_time<boost::posix_time::ptime>(
+                  "TimeStamp", "%Y-%m-%d %H:%M:%S")
+           << "]["
+           << logging::expressions::format_named_scope(
+                  "Scope", logging::keywords::format = "%c")
+           << "]"
+           << "[" << logging::trivial::severity << "] "
+           << logging::expressions::smessage));
 
   logging::add_common_attributes();
   logging::core::get()->add_global_attribute(
-    "Scope", logging::attributes::named_scope());
+      "Scope", logging::attributes::named_scope());
 
   BOOST_LOG_FUNCTION();
 
@@ -66,9 +60,7 @@ InitLogging(bool verbose)
   }
 }
 
-int
-main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
   BOOST_LOG_FUNCTION()
   BOOST_LOG_TRIVIAL(info) << "Version: " << PROJECT_VERSION;
 
@@ -77,8 +69,8 @@ main(int argc, char** argv)
 
   po::options_description desc("Allowed options");
   desc.add_options()("help,h", "produce help message")(
-    "setup,s", po::bool_switch(), "run initial setup")(
-    "verbose,v", po::bool_switch(), "print debug info");
+      "setup,s", po::bool_switch(),
+      "run initial setup")("verbose,v", po::bool_switch(), "print debug info");
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -98,7 +90,7 @@ main(int argc, char** argv)
       app.Init();
       app.NormalOperation();
     }
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cout << "An exception was caught: " << e.what() << std::endl;
   }
 

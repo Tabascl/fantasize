@@ -11,8 +11,9 @@ vector<shared_ptr<Sensor>> SensorManager::TemperatureSensors() {
 
   tempSensors = mLMSensorsFacade->TemperatureSensors();
 
-  auto gpuSensors = mGPUSensorsFacade->TemperatureSensors();
-  tempSensors.insert(tempSensors.end(), gpuSensors.begin(), gpuSensors.end());
+  //   auto gpuSensors = mGPUSensorsFacade->TemperatureSensors();
+  //  tempSensors.insert(tempSensors.end(), gpuSensors.begin(),
+  //  gpuSensors.end());
 
   return tempSensors;
 }

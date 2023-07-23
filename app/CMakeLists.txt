@@ -10,9 +10,9 @@ find_package(Boost 1.74 COMPONENTS program_options log log_setup date_time REQUI
 add_executable(${PROJECT_NAME}
   src/main.cxx
   src/sensor/LMSensorsFacade.cxx
-  src/sensor/GPUSensorsFacade.cxx
+#  src/sensor/GPUSensorsFacade.cxx
   src/sensor/Sensor.cxx
-  src/sensor/NvidiaSensor.cxx
+#  src/sensor/NvidiaSensor.cxx
   src/sensor/LMSensor.cxx
   src/pwm/PWMControl.cxx
   src/pwm/PWMControlFacade.cxx
@@ -30,8 +30,10 @@ add_executable(${PROJECT_NAME}
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
-target_include_directories(${PROJECT_NAME} PUBLIC include /opt/cuda)
-target_link_libraries(${PROJECT_NAME} PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json tbb ${Boost_LIBRARIES})
+# target_include_directories(${PROJECT_NAME} PUBLIC include /opt/cuda)
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+# target_link_libraries(${PROJECT_NAME} PUBLIC sensors nvidia-ml nlohmann_json::nlohmann_json tbb ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC sensors nlohmann_json::nlohmann_json tbb ${Boost_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION usr/local/bin)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/unit/fantasize.service DESTINATION usr/lib/systemd/system)
