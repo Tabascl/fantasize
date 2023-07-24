@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <boost/json/kind.hpp>
 #include <sensor/LMSensor.h>
 #include <sensors/sensors.h>
@@ -17,7 +19,9 @@ int LMSensor::value() {
 }
 
 const string LMSensor::toString() const {
-  return sensors_get_label(mChipName, mFeature);
+  ostringstream os;
+  os << mChipName->prefix << "." << sensors_get_label(mChipName, mFeature);
+  return os.str();
 }
 
 json LMSensor::toJson() const {

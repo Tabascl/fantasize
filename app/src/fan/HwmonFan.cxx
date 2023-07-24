@@ -39,6 +39,12 @@ void HwmonFan::StartPWM(int value) { mStartPWM = value; }
 
 int HwmonFan::StartPWM() { return mStartPWM; }
 
+void HwmonFan::ZeroFanModeSupported(bool value) {
+  mZeroFanModeSupported = value;
+}
+
+bool HwmonFan::ZeroFanModeSupported() { return mZeroFanModeSupported; }
+
 void HwmonFan::FindPWMLimits() {
   cout << "Looking for minimal PWM" << endl;
   int minPWM = 0;
@@ -95,11 +101,9 @@ void HwmonFan::AdjustPWMLimits() {
 
 json HwmonFan::toJson() const {
   json obj;
-  obj = {mPWMControl->toJson(),
-         mRpmSensor->toJson(),
-         {"Label", mLabel},
-         {"MinPWM", mMinPWM},
-         {"StartPWM", mStartPWM}};
+  obj = {mPWMControl->toJson(),   mRpmSensor->toJson(),
+         {"Label", mLabel},       {"MinPWM", mMinPWM},
+         {"StartPWM", mStartPWM}, {"ZeroFan", mZeroFanModeSupported}};
   return obj;
 }
 

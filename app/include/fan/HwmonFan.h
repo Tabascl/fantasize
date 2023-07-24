@@ -24,6 +24,9 @@ public:
   void StartPWM(int value) override;
   int StartPWM() override;
 
+  void ZeroFanModeSupported(bool value) override;
+  bool ZeroFanModeSupported() override;
+
   void FindPWMLimits() override;
   void AdjustPWMLimits() override;
 
@@ -36,8 +39,9 @@ private:
   std::shared_ptr<Sensor> mRpmSensor;
   std::string mLabel;
 
-  int mMinPWM;
-  int mStartPWM;
+  int mMinPWM = 0;
+  int mStartPWM = 0;
+  bool mZeroFanModeSupported = false;
   std::chrono::time_point<std::chrono::steady_clock> mLastAdjustmentTime;
 };
 

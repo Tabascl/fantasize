@@ -17,6 +17,9 @@ public:
   virtual void StartPWM(int value) = 0;
   virtual int StartPWM() = 0;
 
+  virtual void ZeroFanModeSupported(bool value) = 0;
+  virtual bool ZeroFanModeSupported() = 0;
+
   virtual void FindPWMLimits() = 0;
   virtual void AdjustPWMLimits() = 0;
 };

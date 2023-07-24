@@ -12,22 +12,17 @@ FanCurve::FanCurve(std::vector<FanStep> steps,
                    std::vector<std::shared_ptr<Sensor>> sensors,
                    std::vector<std::shared_ptr<Fan>> fans,
                    std::unique_ptr<Aggregator> aggregator)
-  : mSteps(steps)
-  , mTempSensors(sensors)
-  , mFans(fans)
-  , mAggregator(std::move(aggregator))
-{
+    : mSteps(steps), mTempSensors(sensors), mFans(fans),
+      mAggregator(std::move(aggregator)) {
   PrintInfo();
 }
 
-void
-FanCurve::DoFanControl()
-{
+void FanCurve::DoFanControl() {
   BOOST_LOG_FUNCTION();
 
   int temp = AggregateTemperature();
 
-  int t0, t1, p0, p1;
+  int t0 = 0, t1 = 0, p0 = 0, p1 = 0;
   int targetFanPower;
 
   if (temp <= mSteps[0].Temp) {
@@ -35,7 +30,7 @@ FanCurve::DoFanControl()
   } else if (temp > mSteps[mSteps.size() - 1].Temp) {
     targetFanPower = mSteps[mSteps.size() - 1].Percent;
   } else {
-    for (int i = 0; i < mSteps.size(); i++) {
+    for (int i = 0; i < (int)mSteps.size(); i++) {
       if (temp > mSteps[i].Temp) {
         t0 = mSteps[i].Temp;
         p0 = mSteps[i].Percent;
@@ -49,7 +44,7 @@ FanCurve::DoFanControl()
   }
 
   for (auto f : mFans) {
-    if (f->RPM() <= 0) {
+    if (!f->ZeroFanModeSupported() && f->RPM() <= 0) {
       BOOST_LOG_TRIVIAL(warning) << "Fan stopped completely!";
       f->PWM(f->StartPWM());
       f->AdjustPWMLimits();
@@ -59,15 +54,11 @@ FanCurve::DoFanControl()
   }
 }
 
-int
-FanCurve::AggregateTemperature()
-{
+int FanCurve::AggregateTemperature() {
   return mAggregator->aggregate(mTempSensors);
 }
 
-void
-FanCurve::PrintInfo()
-{
+void FanCurve::PrintInfo() {
   BOOST_LOG_FUNCTION()
 
   BOOST_LOG_TRIVIAL(info) << "### Fan curve:";
