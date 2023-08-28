@@ -16,7 +16,7 @@ void FanLabeler::RunFanLabelInteraction(
   cout << endl;
 
   for (auto f : fans) {
-    cout << "Setting fan to max power" << endl;
+    cout << "Setting fan " << f->toString() << " to max power" << endl;
 
     f->PWM(100);
 

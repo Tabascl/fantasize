@@ -1,6 +1,6 @@
-#include <boost/log/attributes/named_scope.hpp>
 #include <iostream>
 
+#include <boost/log/attributes/named_scope.hpp>
 #include <boost/log/trivial.hpp>
 
 #include <fan/FanCurve.h>
@@ -11,14 +11,23 @@ using namespace std;
 FanCurve::FanCurve(std::vector<FanStep> steps,
                    std::vector<std::shared_ptr<Sensor>> sensors,
                    std::vector<std::shared_ptr<Fan>> fans,
-                   std::unique_ptr<Aggregator> aggregator)
+                   std::unique_ptr<Aggregator> aggregator, int hysteresis)
     : mSteps(steps), mTempSensors(sensors), mFans(fans),
-      mAggregator(std::move(aggregator)) {
+      mAggregator(std::move(aggregator)), mHystersis(hysteresis),
+      mLastTemperature(INT_MIN) {
   PrintInfo();
 }
 
 void FanCurve::DoFanControl() {
-  BOOST_LOG_FUNCTION();
+  BOOST_LOG_FUNCTION()
+
+  BOOST_LOG_TRIVIAL(trace) << "## Fans in curve";
+  for (auto f : mFans)
+    BOOST_LOG_TRIVIAL(trace) << f->toString();
+
+  BOOST_LOG_TRIVIAL(trace) << "## Sensors in curve";
+  for (auto s : mTempSensors)
+    BOOST_LOG_TRIVIAL(trace) << s->toString();
 
   int temp = AggregateTemperature();
 
@@ -43,14 +52,22 @@ void FanCurve::DoFanControl() {
     targetFanPower = p0 + ((p1 - p0) / (t1 - t0)) * (temp - t0);
   }
 
-  for (auto f : mFans) {
-    if (!f->ZeroFanModeSupported() && f->RPM() <= 0) {
-      BOOST_LOG_TRIVIAL(warning) << "Fan stopped completely!";
-      f->PWM(f->StartPWM());
-      f->AdjustPWMLimits();
-    } else {
-      f->PWM(targetFanPower);
+  BOOST_LOG_TRIVIAL(trace) << "Current temp: " << temp;
+  BOOST_LOG_TRIVIAL(trace) << "Last temp: " << mLastTemperature;
+
+  BOOST_LOG_TRIVIAL(trace) << "# Hysteresis check";
+  if (ExceedsHysteresis(temp)) {
+    BOOST_LOG_TRIVIAL(trace) << "passed";
+    for (auto f : mFans) {
+      ApplyFanPower(f, targetFanPower);
+
+      mLastTemperature = temp;
     }
+  } else {
+    for (auto f : mFans)
+      f->EnforceSetValue();
+
+    BOOST_LOG_TRIVIAL(trace) << "not passed";
   }
 }
 
@@ -93,4 +110,23 @@ void FanCurve::PrintInfo() {
   sStream << "Aggregate function: " << mAggregator->toString();
 
   BOOST_LOG_TRIVIAL(info) << sStream.str();
+}
+
+bool FanCurve::ExceedsHysteresis(int temperature) {
+  int lowThreshold = mLastTemperature - mHystersis;
+  int highThreshold = mLastTemperature + mHystersis;
+
+  return temperature <= lowThreshold || temperature >= highThreshold;
+}
+
+void FanCurve::ApplyFanPower(std::shared_ptr<Fan> fan, int targetFanPower) {
+  BOOST_LOG_FUNCTION();
+
+  if (!fan->ZeroFanModeSupported() && fan->RPM() <= 0) {
+    BOOST_LOG_TRIVIAL(warning) << "Fan stopped completely!";
+    fan->PWM(fan->StartPWM());
+    fan->AdjustPWMLimits();
+  } else {
+    fan->PWM(targetFanPower);
+  }
 }

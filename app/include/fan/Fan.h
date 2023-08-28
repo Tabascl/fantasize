@@ -22,6 +22,8 @@ public:
 
   virtual void FindPWMLimits() = 0;
   virtual void AdjustPWMLimits() = 0;
+
+  virtual void EnforceSetValue() = 0;
 };
 
 #endif // FAN_H_

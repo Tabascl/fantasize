@@ -1,8 +1,10 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-
 #include <memory>
+
+#include <boost/log/attributes/named_scope.hpp>
+#include <boost/log/trivial.hpp>
 
 #include <Serializer.h>
 #include <fan/HwmonFan.h>
@@ -31,6 +33,8 @@ void Serializer::SerializeFans(vector<shared_ptr<Fan>> fans) {
 
 vector<shared_ptr<Fan>>
 Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
+  BOOST_LOG_FUNCTION();
+
   vector<shared_ptr<Fan>> fans;
 
   // Create a for the sensors first, then searching becomes cheaper
@@ -61,6 +65,12 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
   } catch (const std::exception &e) {
     std::cout << "Deserialization error! Message: " << e.what() << std::endl;
   }
+
+  BOOST_LOG_TRIVIAL(trace) << "### Available Fans";
+  for (auto f : fans) {
+    BOOST_LOG_TRIVIAL(trace) << f->toString();
+  }
+
   return fans;
 }
 
@@ -86,7 +96,10 @@ json Serializer::ReadJson() {
 
 vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
     std::vector<std::shared_ptr<Sensor>> availableSensors,
-    std::vector<std::shared_ptr<Fan>> availableFans) {
+    std::vector<std::shared_ptr<Fan>> availableFans, bool &everythingFound) {
+  BOOST_LOG_FUNCTION();
+
+  everythingFound = true;
   auto data = ReadJson();
 
   map<string, shared_ptr<Sensor>> sensorMap;
@@ -113,6 +126,11 @@ vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
     for (auto &sensor : el.value()["Sensors"].items()) {
       if (sensorMap.contains(sensor.value()))
         sensors.push_back(sensorMap[sensor.value()]);
+      else {
+        BOOST_LOG_TRIVIAL(warning)
+            << "Sensor " << sensor.value() << " not found!";
+        everythingFound = false;
+      }
     }
 
     for (auto &fan : el.value()["Fans"].items()) {
@@ -123,8 +141,10 @@ vector<shared_ptr<FanCurve>> Serializer::DeserializeFanCurves(
     std::unique_ptr<Aggregator> aggregator =
         aggregatorFromString(el.value()["AggregateFunction"]);
 
-    curves.push_back(
-        make_shared<FanCurve>(steps, sensors, fans, std::move(aggregator)));
+    int hysteresis = el.value()["Hysteresis"];
+
+    curves.push_back(make_shared<FanCurve>(steps, sensors, fans,
+                                           std::move(aggregator), hysteresis));
   }
 
   return curves;

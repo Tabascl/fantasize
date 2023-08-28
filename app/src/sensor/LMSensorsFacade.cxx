@@ -12,12 +12,10 @@ using namespace std;
 #define CONFIG_FILE "/etc/conf.d/sensors"
 
 LMSensorsFacade::LMSensorsFacade() : mConfigFile(fopen(CONFIG_FILE, "r")) {
-  if (sensors_init(mConfigFile) != 0) {
-    throw runtime_error("Config file doesn't exist");
-  }
+  InitSensors();
 }
 
-LMSensorsFacade::~LMSensorsFacade() { sensors_cleanup(); }
+LMSensorsFacade::~LMSensorsFacade() { CleanupSensors(); }
 
 std::vector<std::shared_ptr<Sensor>> LMSensorsFacade::TemperatureSensors() {
   return Sensors<SENSORS_SUBFEATURE_TEMP_INPUT>();
@@ -48,3 +46,16 @@ std::vector<std::shared_ptr<Sensor>> LMSensorsFacade::Sensors() {
 
   return sensors;
 }
+
+void LMSensorsFacade::ReloadSensors() {
+  CleanupSensors();
+  InitSensors();
+}
+
+void LMSensorsFacade::InitSensors() {
+  if (sensors_init(mConfigFile) != 0) {
+    throw runtime_error("Config file doesn't exist");
+  }
+}
+
+void LMSensorsFacade::CleanupSensors() { sensors_cleanup(); }

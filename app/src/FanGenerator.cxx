@@ -8,7 +8,7 @@
 #include <fan/HwmonFan.h>
 #include <pwm/PWMControl.h>
 
-#define SETTLE_TIMEOUT 5
+#define SETTLE_TIMEOUT 10
 
 using namespace std;
 

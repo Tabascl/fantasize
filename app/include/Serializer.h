@@ -17,16 +17,16 @@
 
 using json = nlohmann::json;
 
-class Serializer
-{
+class Serializer {
 public:
   Serializer();
   void SerializeFans(std::vector<std::shared_ptr<Fan>> fans);
-  std::vector<std::shared_ptr<Fan>> DeserializeFans(
-    std::vector<std::shared_ptr<Sensor>> availableSensors);
-  std::vector<std::shared_ptr<FanCurve>> DeserializeFanCurves(
-    std::vector<std::shared_ptr<Sensor>> availableSensors,
-    std::vector<std::shared_ptr<Fan>> availableFans);
+  std::vector<std::shared_ptr<Fan>>
+  DeserializeFans(std::vector<std::shared_ptr<Sensor>> availableSensors);
+  std::vector<std::shared_ptr<FanCurve>>
+  DeserializeFanCurves(std::vector<std::shared_ptr<Sensor>> availableSensors,
+                       std::vector<std::shared_ptr<Fan>> availableFans,
+                       bool &everythingFound);
   std::shared_ptr<Settings> DeserializeSettings();
 
 private:

@@ -30,11 +30,16 @@ public:
   void FindPWMLimits() override;
   void AdjustPWMLimits() override;
 
+  void EnforceSetValue() override;
+
   json toJson() const override;
 
   const std::string toString() const override;
 
 private:
+  bool InhibitStopPeriodExpired();
+  void SetPower(int percent);
+
   std::shared_ptr<PWMControl> mPWMControl;
   std::shared_ptr<Sensor> mRpmSensor;
   std::string mLabel;
@@ -43,6 +48,9 @@ private:
   int mStartPWM = 0;
   bool mZeroFanModeSupported = false;
   std::chrono::time_point<std::chrono::steady_clock> mLastAdjustmentTime;
+  std::chrono::time_point<std::chrono::steady_clock> mLastStartTime;
+  int mSetValue = 0;
+  bool mWasStopped = false;
 };
 
 #endif // HWMONFAN_H_

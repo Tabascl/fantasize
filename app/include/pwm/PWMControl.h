@@ -26,8 +26,6 @@ public:
   json toJson() const override;
 
 private:
-  int mCurrentValue;
-
   std::string mControlPath;
   std::string mEnablePath;
   std::string mModePath;

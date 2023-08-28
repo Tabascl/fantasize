@@ -12,6 +12,8 @@ public:
   std::vector<std::shared_ptr<Sensor>> TemperatureSensors();
   std::vector<std::shared_ptr<Sensor>> RPMSensors();
 
+  void ReloadSensors();
+
 private:
   std::unique_ptr<LMSensorsFacade> mLMSensorsFacade;
   std::unique_ptr<GPUSensorsFacade> mGPUSensorsFacade;

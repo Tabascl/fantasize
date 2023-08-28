@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <ostream>
 #include <thread>
@@ -9,6 +10,7 @@
 #include <pwm/PWMControl.h>
 
 #define TIMEOUT 10
+#define INHIBIT_STOP_PERIOD 120
 #define STEP 2
 
 using namespace std;
@@ -21,10 +23,38 @@ HwmonFan::HwmonFan(std::shared_ptr<PWMControl> pwmControl,
 
 void HwmonFan::PWM(int percent) {
   if (percent < mMinPWM) {
-    mPWMControl->Power(mMinPWM);
+    if (mZeroFanModeSupported && InhibitStopPeriodExpired()) {
+      SetPower(percent);
+      mWasStopped = true;
+    } else {
+      SetPower(mMinPWM);
+    }
   } else {
-    mPWMControl->Power(percent);
+    if (mWasStopped) {
+      mWasStopped = false;
+      mLastStartTime = chrono::steady_clock::now();
+      SetPower(mStartPWM);
+    } else {
+      SetPower(percent);
+    }
   }
+}
+
+bool HwmonFan::InhibitStopPeriodExpired() {
+  BOOST_LOG_FUNCTION();
+
+  auto result = chrono::steady_clock::now() - mLastStartTime >
+                chrono::duration(chrono::seconds(INHIBIT_STOP_PERIOD));
+
+  BOOST_LOG_TRIVIAL(trace) << "Inhibit-Stop period expired:"
+                           << (result ? "true" : "false");
+
+  return result;
+}
+
+void HwmonFan::SetPower(int percent) {
+  mPWMControl->Power(percent);
+  mSetValue = percent;
 }
 
 int HwmonFan::RPM() { return mRpmSensor->value(); }
@@ -99,6 +129,8 @@ void HwmonFan::AdjustPWMLimits() {
   }
 }
 
+void HwmonFan::EnforceSetValue() { mPWMControl->Power(mSetValue); }
+
 json HwmonFan::toJson() const {
   json obj;
   obj = {mPWMControl->toJson(),   mRpmSensor->toJson(),
@@ -111,6 +143,6 @@ const string HwmonFan::toString() const {
   if (!mLabel.empty()) {
     return mLabel;
   } else {
-    return "fan:" + mPWMControl->toString();
+    return mPWMControl->toString();
   }
 }

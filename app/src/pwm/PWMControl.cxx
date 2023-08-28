@@ -15,9 +15,7 @@
 using namespace std;
 namespace fs = filesystem;
 
-PWMControl::PWMControl(string controlPath)
-  : mControlPath(controlPath)
-{
+PWMControl::PWMControl(string controlPath) : mControlPath(controlPath) {
   fs::path pathEnable(mControlPath + PWM_POSTFIX_ENABLE);
   fs::path pathMode(mControlPath + PWM_POSTFIX_MODE);
 
@@ -25,8 +23,6 @@ PWMControl::PWMControl(string controlPath)
   mModePath = pathMode;
 
   ifstream istrm;
-
-  mCurrentValue = Power();
 
   istrm.open(mEnablePath);
   istrm >> mInitialEnable;
@@ -37,35 +33,28 @@ PWMControl::PWMControl(string controlPath)
   istrm.close();
 }
 
-PWMControl::~PWMControl()
-{
+PWMControl::~PWMControl() {
   BOOST_LOG_FUNCTION();
 
   BOOST_LOG_TRIVIAL(trace) << "Cleanup";
   Reset();
 }
 
-void
-PWMControl::Power(int percent)
-{
+void PWMControl::Power(int percent) {
   BOOST_LOG_FUNCTION();
 
   int pwmValue = (PWM_MAX_VALUE * percent) / 100;
 
-  if (percent != mCurrentValue) {
+  if (percent != Power()) {
     BOOST_LOG_TRIVIAL(trace) << "Updating control value of " << toString()
                              << " to " << percent << "% (" << pwmValue << ")";
     ofstream ostrm(mControlPath, ios::trunc);
     ostrm << pwmValue;
     ostrm.close();
-
-    mCurrentValue = percent;
   }
 }
 
-int
-PWMControl::Power()
-{
+int PWMControl::Power() {
   int value;
   ifstream istrm;
 
@@ -75,17 +64,13 @@ PWMControl::Power()
   return (value * 100) / PWM_MAX_VALUE;
 }
 
-void
-PWMControl::EnableManualControl()
-{
+void PWMControl::EnableManualControl() {
   ofstream ostrm(mEnablePath, ios::trunc);
   ostrm << static_cast<int>(PWM_ENABLE::MANUAL_CONTROL);
   ostrm.close();
 }
 
-void
-PWMControl::Reset()
-{
+void PWMControl::Reset() {
   ofstream ostrm(mEnablePath, ios::trunc);
 
   ostrm << mInitialEnable;
@@ -97,15 +82,9 @@ PWMControl::Reset()
   ostrm.close();
 }
 
-const string
-PWMControl::toString() const
-{
-  return fs::path(mControlPath).filename();
-}
+const string PWMControl::toString() const { return fs::path(mControlPath); }
 
-json
-PWMControl::toJson() const
-{
-  json obj = { "PWMControl", mControlPath };
+json PWMControl::toJson() const {
+  json obj = {"PWMControl", mControlPath};
   return obj;
 }

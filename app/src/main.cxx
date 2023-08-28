@@ -27,8 +27,6 @@ namespace logging = boost::log;
 
 App app;
 
-static int doInitialSetup = 0;
-
 void signal_handler(int s) { app.Shutdown(); }
 
 void InitLogging(bool verbose) {
