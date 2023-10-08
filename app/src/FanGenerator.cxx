@@ -22,7 +22,7 @@ FanGenerator::FindFans(vector<shared_ptr<Sensor>> rpmSensors,
   cout << "Setting all fans to maximum speed" << endl;
   for (auto c : pwmControls) {
     c->EnableManualControl();
-    c->Power(100);
+    c->SetPower(100);
   }
 
   // Wait for fans to settle
@@ -41,7 +41,7 @@ FanGenerator::FindFans(vector<shared_ptr<Sensor>> rpmSensors,
   for (auto c : pwmControls) {
     cout << "Setting " << c->toString()
          << " to 50% and wait for it to settle..." << endl;
-    c->Power(50);
+    c->SetPower(50);
 
     this_thread::sleep_for(chrono::seconds(SETTLE_TIMEOUT));
 
@@ -53,7 +53,7 @@ FanGenerator::FindFans(vector<shared_ptr<Sensor>> rpmSensors,
     }
 
     cout << "Setting fan back to 100%" << endl;
-    c->Power(100);
+    c->SetPower(100);
   }
 
   return mapping;

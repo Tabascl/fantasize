@@ -15,8 +15,8 @@ public:
   PWMControl(std::string controlPath);
   ~PWMControl();
 
-  void Power(int percent);
-  int Power();
+  void SetPower(int percent);
+  int CurrentPWM();
 
   void EnableManualControl();
   void Reset();

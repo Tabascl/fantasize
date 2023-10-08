@@ -34,4 +34,4 @@ exe = executable('fantasize',
   install: true,
   include_directories: inc)
 
-install_data('unit/fantasize.service', install_dir : 'usr/lib/systemd/system')
+install_data('unit/fantasize.service', install_dir : '/usr/lib/systemd/system')

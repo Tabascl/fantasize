@@ -40,12 +40,12 @@ PWMControl::~PWMControl() {
   Reset();
 }
 
-void PWMControl::Power(int percent) {
+void PWMControl::SetPower(int percent) {
   BOOST_LOG_FUNCTION();
 
   int pwmValue = (PWM_MAX_VALUE * percent) / 100;
 
-  if (percent != Power()) {
+  if (pwmValue != CurrentPWM()) {
     BOOST_LOG_TRIVIAL(trace) << "Updating control value of " << toString()
                              << " to " << percent << "% (" << pwmValue << ")";
     ofstream ostrm(mControlPath, ios::trunc);
@@ -54,14 +54,14 @@ void PWMControl::Power(int percent) {
   }
 }
 
-int PWMControl::Power() {
+int PWMControl::CurrentPWM() {
   int value;
   ifstream istrm;
 
   istrm.open(mControlPath);
   istrm >> value;
 
-  return (value * 100) / PWM_MAX_VALUE;
+  return value;
 }
 
 void PWMControl::EnableManualControl() {

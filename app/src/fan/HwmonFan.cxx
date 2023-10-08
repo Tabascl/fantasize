@@ -53,7 +53,7 @@ bool HwmonFan::InhibitStopPeriodExpired() {
 }
 
 void HwmonFan::SetPower(int percent) {
-  mPWMControl->Power(percent);
+  mPWMControl->SetPower(percent);
   mSetValue = percent;
 }
 
@@ -129,7 +129,7 @@ void HwmonFan::AdjustPWMLimits() {
   }
 }
 
-void HwmonFan::EnforceSetValue() { mPWMControl->Power(mSetValue); }
+void HwmonFan::EnforceSetValue() { mPWMControl->SetPower(mSetValue); }
 
 json HwmonFan::toJson() const {
   json obj;
