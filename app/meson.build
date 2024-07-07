@@ -1,4 +1,4 @@
-project('fantasize', 'cpp', version : '0.2.1', default_options : ['cpp_std=c++20'])
+project('fantasize', 'cpp', version : '0.3.0', default_options : 'cpp_std=c++20')
 
 src = [
   'src/main.cxx',
