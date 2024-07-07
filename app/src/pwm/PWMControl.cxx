@@ -1,8 +1,8 @@
-#include <boost/log/attributes/named_scope.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
+#include <boost/log/attributes/named_scope.hpp>
 #include <boost/log/trivial.hpp>
 
 #include <pwm/PWMControl.h>
@@ -15,12 +15,24 @@
 using namespace std;
 namespace fs = filesystem;
 
-PWMControl::PWMControl(string controlPath) : mControlPath(controlPath) {
-  fs::path pathEnable(mControlPath + PWM_POSTFIX_ENABLE);
-  fs::path pathMode(mControlPath + PWM_POSTFIX_MODE);
+PWMControl::PWMControl(string controlPath, int deviceIndex)
+    : mConfigPath(controlPath), mDeviceIndex(deviceIndex) {
+  auto path = fs::path{controlPath};
 
-  mEnablePath = pathEnable;
-  mModePath = pathMode;
+  int fileCount =
+      distance(fs::directory_iterator(path), fs::directory_iterator{});
+  if (fileCount != 1)
+    throw runtime_error("More than one HWMON device present, unsupported");
+
+  for (auto de : fs::directory_iterator(path)) {
+    auto testPath = de.path();
+    mControlPath =
+        fs::path{de.path() / (string("pwm").append(to_string(deviceIndex)))}
+            .string();
+  }
+
+  mEnablePath = fs::path{mControlPath + PWM_POSTFIX_ENABLE}.string();
+  mModePath = fs::path{mControlPath + PWM_POSTFIX_MODE}.string();
 
   ifstream istrm;
 
@@ -85,6 +97,6 @@ void PWMControl::Reset() {
 const string PWMControl::toString() const { return fs::path(mControlPath); }
 
 json PWMControl::toJson() const {
-  json obj = {"PWMControl", mControlPath};
+  json obj = {"PWMControl", {{"Path", mConfigPath}, {"Index", mDeviceIndex}}};
   return obj;
 }

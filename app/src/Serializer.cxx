@@ -37,7 +37,7 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
 
   vector<shared_ptr<Fan>> fans;
 
-  // Create a for the sensors first, then searching becomes cheaper
+  // Create a map for the sensors first, then searching becomes cheaper
   map<string, shared_ptr<Sensor>> sensorMap;
   for (auto s : availableSensors) {
     sensorMap[s->toString()] = s;
@@ -46,7 +46,7 @@ Serializer::DeserializeFans(vector<shared_ptr<Sensor>> availableSensors) {
   auto data = ReadJson();
   try {
     for (auto &el : data["fans"].items()) {
-      auto pwmControl = make_shared<PWMControl>(el.value()["PWMControl"]);
+      auto pwmControl = make_shared<PWMControl>(el.value()["PWMControl"]["Path"], el.value()["PWMControl"]["Index"]);
       auto rpmSensor = sensorMap[el.value()["LMSensor"]];
 
       int minPWM = el.value()["MinPWM"];

@@ -23,7 +23,6 @@ public:
   void DoFanControl();
 
 private:
-  int AggregateTemperature();
   void PrintInfo();
   bool ExceedsHysteresis(int temperature);
   void ApplyFanPower(std::shared_ptr<Fan> fan, int targetFanPower);

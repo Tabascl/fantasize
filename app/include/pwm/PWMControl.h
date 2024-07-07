@@ -12,7 +12,7 @@ enum class PWM_MODE { DC = 0, PWM };
 
 class PWMControl : public Printable, public Serializable {
 public:
-  PWMControl(std::string controlPath);
+  PWMControl(std::string controlPath, int deviceIndex);
   ~PWMControl();
 
   void SetPower(int percent);
@@ -26,9 +26,11 @@ public:
   json toJson() const override;
 
 private:
+  std::string mConfigPath;
   std::string mControlPath;
   std::string mEnablePath;
   std::string mModePath;
+  int mDeviceIndex;
 
   std::string mInitialEnable;
   std::string mInitialMode;

@@ -29,7 +29,7 @@ void FanCurve::DoFanControl() {
   for (auto s : mTempSensors)
     BOOST_LOG_TRIVIAL(trace) << s->toString();
 
-  int temp = AggregateTemperature();
+  int temp = mAggregator->aggregate(mTempSensors);
 
   int t0 = 0, t1 = 0, p0 = 0, p1 = 0;
   int targetFanPower;
@@ -69,10 +69,6 @@ void FanCurve::DoFanControl() {
 
     BOOST_LOG_TRIVIAL(trace) << "not passed";
   }
-}
-
-int FanCurve::AggregateTemperature() {
-  return mAggregator->aggregate(mTempSensors);
 }
 
 void FanCurve::PrintInfo() {
@@ -123,7 +119,7 @@ void FanCurve::ApplyFanPower(std::shared_ptr<Fan> fan, int targetFanPower) {
   BOOST_LOG_FUNCTION();
 
   if (!fan->ZeroFanModeSupported() && fan->RPM() <= 0) {
-    BOOST_LOG_TRIVIAL(warning) << "Fan stopped completely!";
+    BOOST_LOG_TRIVIAL(warning) << "Fan " << fan->toString() << " stopped completely!";
     fan->PWM(fan->StartPWM());
     fan->AdjustPWMLimits();
   } else {

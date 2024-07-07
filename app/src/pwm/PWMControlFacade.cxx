@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <iostream>
 #include <regex>
+#include <string>
 
 #include <pwm/PWMControlFacade.h>
 
@@ -20,14 +21,20 @@ vector<shared_ptr<PWMControl>> PWMControlFacade::PWMControls() {
     for (const fs::directory_entry &hwmon_device :
          fs::directory_iterator{HWMON_BASE_PATH}) {
 
+      // Resolve symlink to get device path instead of hwmon path, the latter of
+      // which can change
+      fs::path actual_path =
+          fs::canonical(HWMON_BASE_PATH / fs::read_symlink(hwmon_device));
+
       for (const fs::directory_entry &control :
-           fs::directory_iterator{hwmon_device}) {
+           fs::directory_iterator{actual_path}) {
         auto filename = control.path().filename().string();
 
         if (regex_match(filename, re_ctrl)) {
-          auto controlPath = control.path().string();
+          auto controlIndex = filename.back() - '0';
+          auto controlPath = actual_path.parent_path();
 
-          controls.push_back(make_shared<PWMControl>(controlPath));
+          controls.push_back(make_shared<PWMControl>(controlPath, controlIndex));
         }
       }
     }
